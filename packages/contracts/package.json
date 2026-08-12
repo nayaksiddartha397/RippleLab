@@ -1,0 +1,12 @@
+{
+  "name": "@ripplelab/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./health": "./src/health.ts"
+  },
+  "scripts": {
+    "check": "node scripts/validate.mjs"
+  }
+}

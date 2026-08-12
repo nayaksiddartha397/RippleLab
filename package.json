@@ -1,0 +1,21 @@
+{
+  "name": "ripplelab",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.16.0",
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=11.16.0"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @ripplelab/web dev",
+    "dev:api": "uv run --project services/economic-engine uvicorn ripplelab_engine.main:app --reload --app-dir services/economic-engine/src",
+    "build": "pnpm --filter @ripplelab/web build",
+    "check": "pnpm check:contracts && pnpm check:web && pnpm check:api && pnpm check:secrets",
+    "check:web": "pnpm --filter @ripplelab/web lint && pnpm --filter @ripplelab/web typecheck && pnpm --filter @ripplelab/web build",
+    "check:api": "uv run --project services/economic-engine ruff check services/economic-engine && uv run --project services/economic-engine ruff format --check services/economic-engine && uv run --project services/economic-engine pytest services/economic-engine/tests",
+    "check:contracts": "node packages/contracts/scripts/validate.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "format": "pnpm --filter @ripplelab/web exec eslint --fix . && uv run --project services/economic-engine ruff format services/economic-engine"
+  }
+}

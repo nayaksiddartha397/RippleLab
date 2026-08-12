@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ripplelab.local/schemas/health-response.schema.json",
+  "title": "HealthResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "service", "version"],
+  "properties": {
+    "status": { "const": "ok" },
+    "service": { "const": "ripplelab-economic-engine" },
+    "version": {
+      "type": "string",
+      "pattern": "^0\\.1\\.[0-9]+$"
+    }
+  }
+}
