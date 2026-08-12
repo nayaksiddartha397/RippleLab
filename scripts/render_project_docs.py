@@ -305,6 +305,9 @@ def main() -> int:
     for source, destination in documents.items():
         if not source.exists():
             raise FileNotFoundError(source)
+        if destination.exists() and destination.stat().st_mtime >= source.stat().st_mtime:
+            print(f"up to date: {destination}")
+            continue
         render(source, destination)
         print(destination)
     return 0
