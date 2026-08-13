@@ -5,6 +5,7 @@
 **Status:** Complete  
 **Branch:** `codex/day-05-contracts`  
 **Implementation commit:** `4745f97`  
+**Deployed commit:** `019eafa`  
 **Quality gate:** Full local suite passed
 
 ## 1. Objective
@@ -29,9 +30,15 @@ RippleLab now has a strict `1.0.0` simulation boundary. The request contains an 
 
 The five supported scenarios are inflation change, RBI repo-rate change, oil-price change, income-tax change and job-income change. Each uses a fixed semantic unit. A repo-rate shock must use basis points; callers cannot label it in percentage points and rely on an implicit conversion.
 
-A public `/progress` page was also added so the deployed site can show the actual delivery state without requiring authentication or exposing financial data.
+A non-personalized `/progress` page was also added so the deployed site can show the actual delivery state without requiring a RippleLab account or exposing financial data. The owner-only deployment still requires the authenticated Codex/ChatGPT session described below.
 
-## 4. Contract Architecture
+## 4. Production Preview
+
+The current full web application is deployed at [ripplelab-progress.nayaksiddartha397.chatgpt.site](https://ripplelab-progress.nayaksiddartha397.chatgpt.site). Day 5 is saved as deployment version 1 from commit `019eafa`. The deployment uses owner-only access during development; visitors must open it through their authenticated Codex/ChatGPT session.
+
+The hosted build includes the landing page, `/progress`, design system, authentication screens, dashboard and financial-profile workflow. Public/read-only product surfaces work immediately. Live account creation and persistent financial profiles still require the Supabase environment configuration planned for the hosted backend setup.
+
+## 5. Contract Architecture
 
 | Layer | Artifact | Responsibility |
 | --- | --- | --- |
@@ -43,7 +50,7 @@ A public `/progress` page was also added so the deployed site can show the actua
 
 The generated TypeScript file is committed for consumers but contains a generated-file warning. `pnpm generate:contracts` updates it; the package check fails if the checked-in output no longer matches the schema.
 
-## 5. Supported Scenario Units
+## 6. Supported Scenario Units
 
 | Scenario | Contract enum | Required shock unit |
 | --- | --- | --- |
@@ -55,7 +62,7 @@ The generated TypeScript file is committed for consumers but contains a generate
 
 All money fields ending in `Paise` are integers. Rates ending in `Bps` are integer basis points. The request fixes country to India and currency to INR for the first MVP.
 
-## 6. Confidence Rubric
+## 7. Confidence Rubric
 
 Five dimensions are independently scored 0-4: evidence quality, causal directness, model stability, personalization coverage and data recency. The total score is the dimension sum multiplied by five.
 
@@ -65,7 +72,7 @@ Five dimensions are independently scored 0-4: evidence quality, causal directnes
 
 The validator checks that each stored score equals its dimensions and that the label matches the score band. Every confidence object also requires a plain-language rationale. This score describes support for an estimate under stated assumptions; it is not a probability that a forecast will occur.
 
-## 7. Golden Repo-Rate Example
+## 8. Golden Repo-Rate Example
 
 The golden request models a 100 basis-point repo-rate cut for a salaried Bengaluru homeowner with a floating home loan and fixed deposits. It snapshots the personal balances, declares loan/deposit pass-through ratios and cites RBI source metadata.
 
@@ -73,7 +80,7 @@ The illustrative result shows two opposing causal paths: lower floating-loan pay
 
 Every edge references existing source/target nodes, assumptions and citations. Every impact references a causal node. The validator checks those relationships in addition to ordinary JSON shape validation.
 
-## 8. API Agreement
+## 9. API Agreement
 
 FastAPI exposes `POST /v1/contracts/simulation/validate`. It parses the golden request with a discriminated Pydantic union and returns only its validated schema version, scenario type and request ID. The endpoint intentionally does not calculate an outcome.
 
@@ -83,7 +90,7 @@ Python tests confirm acceptance of the same golden request and rejection of:
 - `percentage_points` supplied where repo-rate `basis_points` are required;
 - undocumented/extra scenario fields.
 
-## 9. Verification Evidence
+## 10. Verification Evidence
 
 | Check | Method | Result |
 | --- | --- | --- |
@@ -99,9 +106,11 @@ Python tests confirm acceptance of the same golden request and rejection of:
 | Profile security | Migration/RLS policy assertion | Passed |
 | Secret scan | Repository scan | Passed |
 | Full quality gate | `pnpm check` | Passed |
+| Hosting build | Vinext/Cloudflare Worker production bundle | Passed |
+| Production deployment | Owner-only Sites deployment, version 1 | Succeeded |
 | Visual review | Public progress page in in-app browser | Passed |
 
-## 10. Important Files
+## 11. Important Files
 
 - `packages/contracts/schemas/simulation-contract.schema.json` - canonical contract.
 - `packages/contracts/src/generated/simulation.ts` - generated web types and constants.
@@ -111,12 +120,14 @@ Python tests confirm acceptance of the same golden request and rejection of:
 - `services/economic-engine/tests/test_simulation_contract.py` - API agreement and rejection tests.
 - `docs/SIMULATION_CONTRACT_V1.md` - versioning, units, confidence and example documentation.
 - `apps/web/src/app/progress/page.tsx` - public progress preview.
+- `apps/web/vite.config.ts` and `apps/web/worker/index.ts` - production hosting adapter.
+- `apps/web/.openai/hosting.json` - persistent Sites project binding.
 
-## 11. Visual Review
+## 12. Visual Review
 
 The public progress page presents five completed foundations, Day 6 as the next checkpoint and Day 7 as the first end-to-end simulation target. It includes a compact causal-contract illustration showing that a policy value is followed by an assumption/source link and a personal impact/confidence link. The page is responsive and passes desktop and mobile automated accessibility checks.
 
-## 12. Decisions
+## 13. Decisions
 
 - Use JSON Schema Draft 2020-12 as the canonical cross-language artifact.
 - Use discriminated scenario objects rather than a single free-form shock shape.
@@ -126,18 +137,19 @@ The public progress page presents five completed foundations, Day 6 as the next 
 - Separate transport schema version from model/formula version.
 - Treat confidence as a transparent evidence rubric, not a forecast probability.
 - Keep the Day 5 API endpoint validation-only; economic calculations begin Day 6.
+- Keep the development deployment owner-only until a deliberate sharing decision is made.
 
-## 13. Risks and Blockers
+## 14. Risks and Blockers
 
 The Python model is a maintained runtime mirror, while TypeScript is generated directly. Contract agreement tests reduce drift, and Day 29 can replace the Python mirror with automated model generation if the toolchain remains stable.
 
 The golden result uses illustrative monetary outcomes until Day 6 calculation primitives are complete. It is labeled accordingly in both documentation and result warnings.
 
-Hosted authentication/profile persistence still requires a linked Supabase project. The public progress and design-system routes remain fully usable without it.
+Hosted authentication/profile persistence still requires a linked Supabase project. The landing, progress and design-system routes remain fully usable in the owner-only preview without it.
 
 No code blocker remains for Day 5.
 
-## 14. Next Day
+## 15. Next Day
 
 Day 6 will implement Decimal-safe EMI, outstanding-balance, floating-rate reset, deposit-interest and rate pass-through primitives. Every function will publish its formula version, rounding rule and assumptions and will be tested against known examples and boundaries.
 
