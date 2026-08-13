@@ -34,3 +34,4 @@ tmp/
 # Hosting and local service state
 .vercel/
 .supabase/
+.wrangler/
