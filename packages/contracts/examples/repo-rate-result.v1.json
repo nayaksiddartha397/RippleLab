@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "1.0.0",
+  "requestId": "8c6edfe5-1d2e-4d9d-b52c-6711bcf891c7",
+  "scenarioType": "repo_rate_change",
+  "modelVersion": "0.1.0",
+  "generatedAt": "2026-08-13T12:00:01.000Z",
+  "currency": "INR",
+  "annualNetImpactPaise": 1800000,
+  "confidence": {
+    "score": 65,
+    "level": "medium",
+    "dimensions": {
+      "evidenceQuality": 3,
+      "causalDirectness": 4,
+      "modelStability": 3,
+      "personalizationCoverage": 2,
+      "dataRecency": 1
+    },
+    "rationale": "Loan and deposit balances are personalized, while transmission and reset timing remain assumptions."
+  },
+  "uncertainty": {
+    "p10AnnualImpactPaise": 600000,
+    "p50AnnualImpactPaise": 1800000,
+    "p90AnnualImpactPaise": 3000000,
+    "method": "deterministic_bounds"
+  },
+  "impacts": [
+    {
+      "id": "home-loan-emi",
+      "label": "Home-loan payments",
+      "direction": "benefit",
+      "annualImpactPaise": 2400000,
+      "mechanism": "A lower floating loan rate can reduce payments after the lender reset date.",
+      "confidence": {
+        "score": 75,
+        "level": "medium",
+        "dimensions": {
+          "evidenceQuality": 3,
+          "causalDirectness": 4,
+          "modelStability": 4,
+          "personalizationCoverage": 3,
+          "dataRecency": 1
+        },
+        "rationale": "The loan balance is personal but pass-through and timing are uncertain."
+      },
+      "causalNodeId": "monthly-emi"
+    },
+    {
+      "id": "deposit-income",
+      "label": "Fixed-deposit income",
+      "direction": "cost",
+      "annualImpactPaise": -600000,
+      "mechanism": "Renewal deposit rates may fall after the policy-rate reduction.",
+      "confidence": {
+        "score": 55,
+        "level": "medium",
+        "dimensions": {
+          "evidenceQuality": 3,
+          "causalDirectness": 3,
+          "modelStability": 2,
+          "personalizationCoverage": 2,
+          "dataRecency": 1
+        },
+        "rationale": "The balance is personal; deposit maturity timing is not yet captured."
+      },
+      "causalNodeId": "deposit-income"
+    }
+  ],
+  "causalGraph": {
+    "nodes": [
+      { "id": "repo-rate", "label": "RBI repo rate", "kind": "policy", "value": -100, "unit": "basis_points" },
+      { "id": "loan-rate", "label": "Floating loan rate", "kind": "financial_product" },
+      { "id": "monthly-emi", "label": "Monthly EMI", "kind": "household" },
+      { "id": "deposit-rate", "label": "Deposit renewal rate", "kind": "financial_product" },
+      { "id": "deposit-income", "label": "Deposit income", "kind": "household" }
+    ],
+    "edges": [
+      {
+        "id": "repo-to-loan-rate",
+        "source": "repo-rate",
+        "target": "loan-rate",
+        "direction": "positive",
+        "mechanism": "Policy-rate movements can transmit to floating lending benchmarks.",
+        "lagMonths": { "minimum": 1, "maximum": 6 },
+        "assumptionIds": ["loanPassThrough"],
+        "citationIds": ["rbi-monetary-policy-framework"],
+        "confidence": {
+          "score": 75,
+          "level": "medium",
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 4, "modelStability": 4, "personalizationCoverage": 3, "dataRecency": 1 },
+          "rationale": "The mechanism is direct but lender timing varies."
+        }
+      },
+      {
+        "id": "loan-rate-to-emi",
+        "source": "loan-rate",
+        "target": "monthly-emi",
+        "direction": "positive",
+        "mechanism": "At constant term, a lower floating rate reduces the amortizing payment.",
+        "lagMonths": { "minimum": 0, "maximum": 1 },
+        "assumptionIds": ["loanPassThrough"],
+        "citationIds": ["rbi-monetary-policy-framework"],
+        "confidence": {
+          "score": 80,
+          "level": "high",
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 4, "modelStability": 4, "personalizationCoverage": 4, "dataRecency": 1 },
+          "rationale": "The amortization relationship is deterministic after a rate is known."
+        }
+      },
+      {
+        "id": "repo-to-deposit-rate",
+        "source": "repo-rate",
+        "target": "deposit-rate",
+        "direction": "positive",
+        "mechanism": "Banks may reprice new and renewing deposits after policy-rate changes.",
+        "lagMonths": { "minimum": 1, "maximum": 12 },
+        "assumptionIds": ["depositPassThrough"],
+        "citationIds": ["rbi-monetary-policy-framework"],
+        "confidence": {
+          "score": 55,
+          "level": "medium",
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 3, "modelStability": 2, "personalizationCoverage": 2, "dataRecency": 1 },
+          "rationale": "Repricing depends on each bank and deposit maturity."
+        }
+      },
+      {
+        "id": "deposit-rate-to-income",
+        "source": "deposit-rate",
+        "target": "deposit-income",
+        "direction": "positive",
+        "mechanism": "A lower renewal rate reduces interest earned on the renewed principal.",
+        "lagMonths": { "minimum": 0, "maximum": 12 },
+        "assumptionIds": ["depositPassThrough"],
+        "citationIds": ["rbi-monetary-policy-framework"],
+        "confidence": {
+          "score": 55,
+          "level": "medium",
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 3, "modelStability": 2, "personalizationCoverage": 2, "dataRecency": 1 },
+          "rationale": "Principal is known while maturity timing remains an assumption."
+        }
+      }
+    ]
+  },
+  "assumptions": [
+    {
+      "id": "loanPassThrough",
+      "label": "Loan-rate pass-through",
+      "value": 0.7,
+      "unit": "ratio",
+      "rationale": "Illustrative share of the policy-rate change reaching the floating home-loan rate.",
+      "editable": true,
+      "citationIds": ["rbi-monetary-policy-framework"]
+    },
+    {
+      "id": "depositPassThrough",
+      "label": "Deposit-rate pass-through",
+      "value": 0.5,
+      "unit": "ratio",
+      "rationale": "Illustrative share of the policy-rate change reaching renewal deposit rates.",
+      "editable": true,
+      "citationIds": ["rbi-monetary-policy-framework"]
+    }
+  ],
+  "citations": [
+    {
+      "id": "rbi-monetary-policy-framework",
+      "title": "Monetary Policy Framework",
+      "publisher": "Reserve Bank of India",
+      "sourceType": "central_bank",
+      "url": "https://www.rbi.org.in/",
+      "accessedAt": "2026-08-13T12:00:00.000Z",
+      "locator": "Policy repo rate and monetary transmission context"
+    }
+  ],
+  "warnings": [
+    "Illustrative golden result for contract testing; Day 6 implements the calculation primitives."
+  ]
+}

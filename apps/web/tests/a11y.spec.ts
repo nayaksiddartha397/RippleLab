@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-for (const route of ["/", "/design-system", "/auth/sign-in", "/auth/sign-up", "/auth/recovery"]) {
+for (const route of ["/", "/progress", "/design-system", "/auth/sign-in", "/auth/sign-up", "/auth/recovery"]) {
   test(`${route} has no critical or serious accessibility violations`, async ({ page }) => {
     await page.goto(route, { waitUntil: "domcontentloaded" });
     await expect(page).toHaveTitle(/RippleLab/);

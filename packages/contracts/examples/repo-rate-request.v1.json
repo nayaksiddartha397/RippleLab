@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "requestId": "8c6edfe5-1d2e-4d9d-b52c-6711bcf891c7",
+  "country": "IN",
+  "currency": "INR",
+  "scenario": {
+    "type": "repo_rate_change",
+    "currentRateBps": 650,
+    "change": { "value": -100, "unit": "basis_points" },
+    "horizonMonths": 12
+  },
+  "profile": {
+    "profileId": "d7c64084-122f-42d1-a40f-6f209c8c49c9",
+    "capturedAt": "2026-08-13T12:00:00.000Z",
+    "age": 34,
+    "city": "Bengaluru",
+    "employmentStatus": "salaried",
+    "housingStatus": "homeowner_with_mortgage",
+    "monthlyTakeHomePaise": 18000000,
+    "monthlyOtherIncomePaise": 0,
+    "monthlyEssentialExpensesPaise": 5500000,
+    "monthlyDiscretionaryExpensesPaise": 2500000,
+    "cashSavingsPaise": 60000000,
+    "fixedDepositsPaise": 80000000,
+    "equityInvestmentsPaise": 150000000,
+    "monthlyRentPaise": 0,
+    "homeValuePaise": 1200000000,
+    "outstandingHomeLoanPaise": 650000000,
+    "outstandingOtherLoansPaise": 0,
+    "monthlyEmiPaise": 5200000,
+    "weightedLoanRateBps": 850
+  },
+  "assumptions": [
+    {
+      "id": "loanPassThrough",
+      "label": "Loan-rate pass-through",
+      "value": 0.7,
+      "unit": "ratio",
+      "rationale": "Illustrative share of the policy-rate change reaching the floating home-loan rate.",
+      "editable": true,
+      "citationIds": ["rbi-monetary-policy-framework"]
+    },
+    {
+      "id": "depositPassThrough",
+      "label": "Deposit-rate pass-through",
+      "value": 0.5,
+      "unit": "ratio",
+      "rationale": "Illustrative share of the policy-rate change reaching renewal deposit rates.",
+      "editable": true,
+      "citationIds": ["rbi-monetary-policy-framework"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "rbi-monetary-policy-framework",
+      "title": "Monetary Policy Framework",
+      "publisher": "Reserve Bank of India",
+      "sourceType": "central_bank",
+      "url": "https://www.rbi.org.in/",
+      "accessedAt": "2026-08-13T12:00:00.000Z",
+      "locator": "Policy repo rate and monetary transmission context"
+    }
+  ]
+}

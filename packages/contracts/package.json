@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./health": "./src/health.ts"
+    ".": "./src/index.ts",
+    "./health": "./src/health.ts",
+    "./simulation": "./src/generated/simulation.ts",
+    "./simulation-schema": "./schemas/simulation-contract.schema.json"
   },
   "scripts": {
-    "check": "node scripts/validate.mjs"
+    "check": "node scripts/generate-types.mjs --check && node scripts/validate.mjs",
+    "generate": "node scripts/generate-types.mjs"
   }
 }

@@ -4,6 +4,15 @@ All notable RippleLab changes are recorded here. The project follows a daily MVP
 
 ## Unreleased
 
+### Day 5 - 2026-08-13
+
+- Added the canonical JSON Schema v1 contract for five scenario families, profile snapshots, assumptions, citations, causal graphs, impacts, uncertainty and confidence.
+- Added deterministic TypeScript generation and a stale-generated-code check.
+- Added a strict FastAPI Pydantic mirror and validation endpoint exercised with the same golden repo-rate request.
+- Added cross-language rejection tests for unsupported scenario types, invalid units and unknown fields.
+- Documented the confidence rubric, contract versioning and a complete source-linked repo-rate request/result example.
+- Added a public build-progress page suitable for deployment without exposing private profile data.
+
 ### Day 4 - 2026-08-13
 
 - Added a protected five-step financial-profile editor covering demographics, household cash flow, assets, housing, loans and goals.

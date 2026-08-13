@@ -1,0 +1,347 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ripplelab.local/schemas/simulation-contract.schema.json",
+  "title": "SimulationContract",
+  "description": "Canonical version 1 request and result contract for deterministic RippleLab simulations.",
+  "oneOf": [
+    { "$ref": "#/$defs/SimulationRequest" },
+    { "$ref": "#/$defs/SimulationResult" }
+  ],
+  "$defs": {
+    "SchemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "ScenarioType": {
+      "type": "string",
+      "enum": [
+        "inflation_change",
+        "repo_rate_change",
+        "oil_price_change",
+        "income_tax_change",
+        "job_income_change"
+      ]
+    },
+    "ConfidenceLevel": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "ConfidenceDimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceQuality", "causalDirectness", "modelStability", "personalizationCoverage", "dataRecency"],
+      "properties": {
+        "evidenceQuality": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "causalDirectness": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "modelStability": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "personalizationCoverage": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "dataRecency": { "type": "integer", "minimum": 0, "maximum": 4 }
+      }
+    },
+    "Confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "level", "dimensions", "rationale"],
+      "properties": {
+        "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "level": { "$ref": "#/$defs/ConfidenceLevel" },
+        "dimensions": { "$ref": "#/$defs/ConfidenceDimensions" },
+        "rationale": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "Citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "publisher", "sourceType", "url", "accessedAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "publisher": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "sourceType": {
+          "type": "string",
+          "enum": ["official_statistic", "regulation", "central_bank", "research", "methodology"]
+        },
+        "url": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "publishedDate": { "type": "string", "format": "date" },
+        "accessedAt": { "type": "string", "format": "date-time" },
+        "locator": { "type": "string", "maxLength": 160 }
+      }
+    },
+    "AssumptionValue": {
+      "oneOf": [
+        { "type": "number" },
+        { "type": "string", "minLength": 1, "maxLength": 200 },
+        { "type": "boolean" }
+      ]
+    },
+    "Assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "value", "unit", "rationale", "editable", "citationIds"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]{2,63}$" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "value": { "$ref": "#/$defs/AssumptionValue" },
+        "unit": {
+          "type": "string",
+          "enum": ["basis_points", "percentage_points", "percent", "paise", "inr", "usd_per_barrel", "ratio", "days", "months", "years", "boolean", "text"]
+        },
+        "rationale": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "editable": { "type": "boolean" },
+        "citationIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "ProfileSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profileId", "capturedAt", "age", "city", "employmentStatus", "housingStatus",
+        "monthlyTakeHomePaise", "monthlyOtherIncomePaise", "monthlyEssentialExpensesPaise",
+        "monthlyDiscretionaryExpensesPaise", "cashSavingsPaise", "fixedDepositsPaise",
+        "equityInvestmentsPaise", "monthlyRentPaise", "homeValuePaise",
+        "outstandingHomeLoanPaise", "outstandingOtherLoansPaise", "monthlyEmiPaise",
+        "weightedLoanRateBps"
+      ],
+      "properties": {
+        "profileId": { "type": "string", "format": "uuid" },
+        "capturedAt": { "type": "string", "format": "date-time" },
+        "age": { "type": "integer", "minimum": 18, "maximum": 100 },
+        "city": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "employmentStatus": {
+          "type": "string",
+          "enum": ["student", "salaried", "self_employed", "business_owner", "retired", "not_employed"]
+        },
+        "housingStatus": {
+          "type": "string",
+          "enum": ["renter", "homeowner_with_mortgage", "homeowner_outright", "family_home"]
+        },
+        "monthlyTakeHomePaise": { "type": "integer", "minimum": 0 },
+        "monthlyOtherIncomePaise": { "type": "integer", "minimum": 0 },
+        "monthlyEssentialExpensesPaise": { "type": "integer", "minimum": 0 },
+        "monthlyDiscretionaryExpensesPaise": { "type": "integer", "minimum": 0 },
+        "cashSavingsPaise": { "type": "integer", "minimum": 0 },
+        "fixedDepositsPaise": { "type": "integer", "minimum": 0 },
+        "equityInvestmentsPaise": { "type": "integer", "minimum": 0 },
+        "monthlyRentPaise": { "type": "integer", "minimum": 0 },
+        "homeValuePaise": { "type": "integer", "minimum": 0 },
+        "outstandingHomeLoanPaise": { "type": "integer", "minimum": 0 },
+        "outstandingOtherLoansPaise": { "type": "integer", "minimum": 0 },
+        "monthlyEmiPaise": { "type": "integer", "minimum": 0 },
+        "weightedLoanRateBps": { "type": "integer", "minimum": 0, "maximum": 10000 }
+      }
+    },
+    "RepoRateScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "currentRateBps", "change", "horizonMonths"],
+      "properties": {
+        "type": { "const": "repo_rate_change" },
+        "currentRateBps": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "change": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "integer", "minimum": -1000, "maximum": 1000 },
+            "unit": { "const": "basis_points" }
+          }
+        },
+        "horizonMonths": { "type": "integer", "minimum": 1, "maximum": 120 }
+      }
+    },
+    "InflationScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "currentInflationPercent", "change", "horizonMonths"],
+      "properties": {
+        "type": { "const": "inflation_change" },
+        "currentInflationPercent": { "type": "number", "minimum": -10, "maximum": 100 },
+        "change": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "number", "minimum": -25, "maximum": 100 },
+            "unit": { "const": "percentage_points" }
+          }
+        },
+        "horizonMonths": { "type": "integer", "minimum": 1, "maximum": 120 }
+      }
+    },
+    "OilPriceScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "currentPrice", "targetPrice", "unit", "horizonMonths"],
+      "properties": {
+        "type": { "const": "oil_price_change" },
+        "currentPrice": { "type": "number", "minimum": 0, "maximum": 500 },
+        "targetPrice": { "type": "number", "minimum": 0, "maximum": 500 },
+        "unit": { "const": "usd_per_barrel" },
+        "horizonMonths": { "type": "integer", "minimum": 1, "maximum": 120 }
+      }
+    },
+    "IncomeTaxScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "effectiveRateChange", "horizonMonths"],
+      "properties": {
+        "type": { "const": "income_tax_change" },
+        "effectiveRateChange": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "number", "minimum": -100, "maximum": 100 },
+            "unit": { "const": "percentage_points" }
+          }
+        },
+        "horizonMonths": { "type": "integer", "minimum": 1, "maximum": 120 }
+      }
+    },
+    "JobIncomeScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "incomeChange", "horizonMonths"],
+      "properties": {
+        "type": { "const": "job_income_change" },
+        "incomeChange": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "unit"],
+          "properties": {
+            "value": { "type": "number", "minimum": -100, "maximum": 1000 },
+            "unit": { "const": "percent" }
+          }
+        },
+        "horizonMonths": { "type": "integer", "minimum": 1, "maximum": 120 }
+      }
+    },
+    "Scenario": {
+      "oneOf": [
+        { "$ref": "#/$defs/InflationScenario" },
+        { "$ref": "#/$defs/RepoRateScenario" },
+        { "$ref": "#/$defs/OilPriceScenario" },
+        { "$ref": "#/$defs/IncomeTaxScenario" },
+        { "$ref": "#/$defs/JobIncomeScenario" }
+      ]
+    },
+    "SimulationRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "requestId", "country", "currency", "scenario", "profile", "assumptions", "evidence"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "requestId": { "type": "string", "format": "uuid" },
+        "country": { "const": "IN" },
+        "currency": { "const": "INR" },
+        "scenario": { "$ref": "#/$defs/Scenario" },
+        "profile": { "$ref": "#/$defs/ProfileSnapshot" },
+        "assumptions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Assumption" },
+          "uniqueItems": true
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Citation" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "CausalNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "kind"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "kind": { "type": "string", "enum": ["policy", "market", "financial_product", "household", "outcome"] },
+        "value": { "type": "number" },
+        "unit": { "type": "string" }
+      }
+    },
+    "CausalEdge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source", "target", "direction", "mechanism", "lagMonths", "assumptionIds", "citationIds", "confidence"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$" },
+        "source": { "type": "string" },
+        "target": { "type": "string" },
+        "direction": { "type": "string", "enum": ["positive", "negative", "mixed"] },
+        "mechanism": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "lagMonths": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["minimum", "maximum"],
+          "properties": {
+            "minimum": { "type": "integer", "minimum": 0, "maximum": 120 },
+            "maximum": { "type": "integer", "minimum": 0, "maximum": 120 }
+          }
+        },
+        "assumptionIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "citationIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "confidence": { "$ref": "#/$defs/Confidence" }
+      }
+    },
+    "CausalGraph": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/CausalNode" } },
+        "edges": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/CausalEdge" } }
+      }
+    },
+    "Impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "direction", "annualImpactPaise", "mechanism", "confidence", "causalNodeId"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]{2,63}$" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "direction": { "type": "string", "enum": ["benefit", "cost", "neutral", "uncertain"] },
+        "annualImpactPaise": { "type": "integer" },
+        "mechanism": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "confidence": { "$ref": "#/$defs/Confidence" },
+        "causalNodeId": { "type": "string" }
+      }
+    },
+    "UncertaintyRange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p10AnnualImpactPaise", "p50AnnualImpactPaise", "p90AnnualImpactPaise", "method"],
+      "properties": {
+        "p10AnnualImpactPaise": { "type": "integer" },
+        "p50AnnualImpactPaise": { "type": "integer" },
+        "p90AnnualImpactPaise": { "type": "integer" },
+        "method": { "type": "string", "enum": ["deterministic_bounds", "monte_carlo"] }
+      }
+    },
+    "SimulationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "requestId", "scenarioType", "modelVersion", "generatedAt", "currency", "annualNetImpactPaise", "confidence", "uncertainty", "impacts", "causalGraph", "assumptions", "citations", "warnings"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "requestId": { "type": "string", "format": "uuid" },
+        "scenarioType": { "$ref": "#/$defs/ScenarioType" },
+        "modelVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "currency": { "const": "INR" },
+        "annualNetImpactPaise": { "type": "integer" },
+        "confidence": { "$ref": "#/$defs/Confidence" },
+        "uncertainty": { "$ref": "#/$defs/UncertaintyRange" },
+        "impacts": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Impact" } },
+        "causalGraph": { "$ref": "#/$defs/CausalGraph" },
+        "assumptions": { "type": "array", "items": { "$ref": "#/$defs/Assumption" }, "uniqueItems": true },
+        "citations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Citation" }, "uniqueItems": true },
+        "warnings": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 300 }, "uniqueItems": true }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 RippleLab is an India-focused economic what-if simulator. It will connect a user's financial profile to deterministic scenario models, an inspectable causal graph, uncertainty ranges and source-backed explanations.
 
-This repository contains the first four checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication and a private personal financial profile.
+This repository contains the first five checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication, a private personal financial profile and a versioned simulation/evidence contract shared by the web and API.
 
 ## Product boundary
 
@@ -84,7 +84,7 @@ Run every core project check with one command:
 pnpm check
 ```
 
-This validates shared contracts and the profile migration, lints/type-checks/builds the web app, exercises accessibility plus authentication/profile lifecycles in Chromium, lints/formats/tests the API and scans repository files for common committed-secret patterns.
+This validates shared contracts and generated TypeScript, checks web/API agreement on the golden simulation request, verifies the profile migration, lints/type-checks/builds the web app, exercises accessibility plus authentication/profile lifecycles in Chromium, lints/formats/tests the API and scans repository files for common committed-secret patterns.
 
 ## Environment variables
 
@@ -97,6 +97,7 @@ All documented variables live in `.env.example`; values there are blank or safe 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Security baseline](docs/SECURITY.md)
 - [Financial profile data model](docs/PROFILE_DATA_MODEL.md)
+- [Simulation and evidence contract v1](docs/SIMULATION_CONTRACT_V1.md)
 - [30-day build plan](docs/RIPPLELAB_30_DAY_PLAN.md)
 
 ## Git workflow

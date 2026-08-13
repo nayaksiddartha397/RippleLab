@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from ripplelab_engine import __version__
+from ripplelab_engine.contracts import ContractValidationResponse, SimulationRequest
 
 
 class HealthResponse(BaseModel):
@@ -44,4 +45,20 @@ def health() -> HealthResponse:
         status="ok",
         service="ripplelab-economic-engine",
         version=__version__,
+    )
+
+
+@app.post(
+    "/v1/contracts/simulation/validate",
+    response_model=ContractValidationResponse,
+    tags=["contracts"],
+)
+def validate_simulation_request(request: SimulationRequest) -> ContractValidationResponse:
+    """Validate a request without running an economic calculation."""
+
+    return ContractValidationResponse(
+        valid=True,
+        schemaVersion=request.schemaVersion,
+        scenarioType=request.scenario.type,
+        requestId=request.requestId,
     )

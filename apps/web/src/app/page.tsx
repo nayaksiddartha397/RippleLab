@@ -18,6 +18,7 @@ export default async function Home() {
           ) : (
             <>
               <Link href="/auth/sign-in">Sign in</Link>
+              <Link href="/progress">Build progress</Link>
               <Link className="button button--primary button--md" href="/auth/sign-up">Create account</Link>
             </>
           )}
@@ -30,7 +31,7 @@ export default async function Home() {
           <p>Build a private financial profile, explore supported policy scenarios and trace every estimate back to its assumptions.</p>
           <div className="public-hero__actions">
             <Link className="button button--primary button--md" href={user ? "/dashboard" : "/auth/sign-up"}>{user ? "Open your workspace" : "Create your private workspace"}</Link>
-            <Link className="button button--secondary button--md" href="/design-system">Explore the interface</Link>
+            <Link className="button button--secondary button--md" href="/progress">See build progress</Link>
           </div>
         </div>
         <div className="public-proof" aria-label="RippleLab trust principles">

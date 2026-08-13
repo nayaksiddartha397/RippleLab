@@ -16,6 +16,7 @@
     "check:a11y": "pnpm --filter @ripplelab/web test:a11y",
     "check:api": "uv run --project services/economic-engine ruff check services/economic-engine && uv run --project services/economic-engine ruff format --check services/economic-engine && uv run --project services/economic-engine pytest services/economic-engine/tests",
     "check:contracts": "node packages/contracts/scripts/validate.mjs",
+    "generate:contracts": "node packages/contracts/scripts/generate-types.mjs",
     "check:profile-schema": "node scripts/check-profile-migration.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "format": "pnpm --filter @ripplelab/web exec eslint --fix . && uv run --project services/economic-engine ruff format services/economic-engine"
