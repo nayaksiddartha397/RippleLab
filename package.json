@@ -11,11 +11,12 @@
     "dev:web": "pnpm --filter @ripplelab/web dev",
     "dev:api": "uv run --project services/economic-engine uvicorn ripplelab_engine.main:app --reload --app-dir services/economic-engine/src",
     "build": "pnpm --filter @ripplelab/web build",
-    "check": "pnpm check:contracts && pnpm check:web && pnpm check:a11y && pnpm check:api && pnpm check:secrets",
+    "check": "pnpm check:contracts && pnpm check:profile-schema && pnpm check:web && pnpm check:a11y && pnpm check:api && pnpm check:secrets",
     "check:web": "pnpm --filter @ripplelab/web lint && pnpm --filter @ripplelab/web typecheck && pnpm --filter @ripplelab/web build",
     "check:a11y": "pnpm --filter @ripplelab/web test:a11y",
     "check:api": "uv run --project services/economic-engine ruff check services/economic-engine && uv run --project services/economic-engine ruff format --check services/economic-engine && uv run --project services/economic-engine pytest services/economic-engine/tests",
     "check:contracts": "node packages/contracts/scripts/validate.mjs",
+    "check:profile-schema": "node scripts/check-profile-migration.mjs",
     "check:secrets": "node scripts/check-secrets.mjs",
     "format": "pnpm --filter @ripplelab/web exec eslint --fix . && uv run --project services/economic-engine ruff format services/economic-engine"
   }

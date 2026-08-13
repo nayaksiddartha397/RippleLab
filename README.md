@@ -2,7 +2,7 @@
 
 RippleLab is an India-focused economic what-if simulator. It will connect a user's financial profile to deterministic scenario models, an inspectable causal graph, uncertainty ranges and source-backed explanations.
 
-This repository contains the first three checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell and Supabase-ready authentication flow with protected dashboard routing.
+This repository contains the first four checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication and a private personal financial profile.
 
 ## Product boundary
 
@@ -66,6 +66,14 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 In Supabase Auth URL Configuration, set the local Site URL to `http://localhost:3000` and allow `http://localhost:3000/auth/confirm`. Hosted email/password sign-up uses PKCE confirmation; password recovery returns through the same confirmation route before opening `/auth/update-password`.
 
+Apply the Day 4 profile migration before using the hosted profile editor:
+
+```bash
+supabase db push
+```
+
+The migration at `supabase/migrations/202608130001_create_financial_profiles.sql` creates one profile per authenticated user and enables forced row-level security for every CRUD operation. Money is stored as integer paise; percentage rates are stored as integer basis points. See [the profile data model](docs/PROFILE_DATA_MODEL.md) for the field and privacy contract.
+
 `SUPABASE_SERVICE_ROLE_KEY` is not needed by the web authentication flow and must never be exposed with a `NEXT_PUBLIC_` prefix. `RIPPLELAB_AUTH_TEST_MODE` is reserved for Playwright and is hard-disabled in production.
 
 ## Quality checks
@@ -76,7 +84,7 @@ Run every core project check with one command:
 pnpm check
 ```
 
-This validates shared contracts, lints/type-checks/builds the web app, exercises accessibility and the authentication lifecycle in Chromium, lints/formats/tests the API and scans repository files for common committed-secret patterns.
+This validates shared contracts and the profile migration, lints/type-checks/builds the web app, exercises accessibility plus authentication/profile lifecycles in Chromium, lints/formats/tests the API and scans repository files for common committed-secret patterns.
 
 ## Environment variables
 
@@ -88,6 +96,7 @@ All documented variables live in `.env.example`; values there are blank or safe 
 - [User journeys](docs/USER_JOURNEYS.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Security baseline](docs/SECURITY.md)
+- [Financial profile data model](docs/PROFILE_DATA_MODEL.md)
 - [30-day build plan](docs/RIPPLELAB_30_DAY_PLAN.md)
 
 ## Git workflow

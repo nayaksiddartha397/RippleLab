@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { Card, CardHeader } from "@/components/ui/card";
@@ -8,15 +9,30 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { SelectField, TextField } from "@/components/ui/form-field";
+import { formatRupeesFromPaise } from "@/lib/profile/format";
+import type { FinancialProfile } from "@/lib/profile/types";
 
-const impactCards = [
-  { label: "Monthly cash flow", value: "Awaiting profile", trend: "Personal income and expenses", tone: "neutral" },
-  { label: "Debt sensitivity", value: "Not connected", trend: "Loans and rate exposure", tone: "negative" },
-  { label: "Savings buffer", value: "To be calculated", trend: "Cash and emergency runway", tone: "positive" },
-];
-
-export function DashboardPreview() {
+export function DashboardPreview({ profile }: { profile: FinancialProfile | null }) {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const monthlyIncome = profile ? profile.monthlyTakeHomePaise + profile.monthlyOtherIncomePaise : 0;
+  const monthlyOutgo = profile
+    ? profile.monthlyEssentialExpensesPaise + profile.monthlyDiscretionaryExpensesPaise + profile.monthlyRentPaise + profile.monthlyEmiPaise
+    : 0;
+  const outstandingDebt = profile ? profile.outstandingHomeLoanPaise + profile.outstandingOtherLoansPaise : 0;
+  const savingsMonths = profile && profile.monthlyEssentialExpensesPaise > 0
+    ? profile.cashSavingsPaise / profile.monthlyEssentialExpensesPaise
+    : 0;
+  const impactCards = profile
+    ? [
+        { label: "Monthly cash flow", value: formatRupeesFromPaise(monthlyIncome - monthlyOutgo), trend: "Income minus expenses, rent and EMI", tone: monthlyIncome >= monthlyOutgo ? "positive" : "negative" },
+        { label: "Outstanding debt", value: formatRupeesFromPaise(outstandingDebt), trend: "Home and other loan exposure", tone: outstandingDebt > 0 ? "negative" : "neutral" },
+        { label: "Savings buffer", value: savingsMonths ? `${savingsMonths.toFixed(1)} months` : "Not estimated", trend: "Cash divided by essential expenses", tone: savingsMonths >= 3 ? "positive" : "neutral" },
+      ]
+    : [
+        { label: "Monthly cash flow", value: "Awaiting profile", trend: "Personal income and expenses", tone: "neutral" },
+        { label: "Debt sensitivity", value: "Not connected", trend: "Loans and rate exposure", tone: "negative" },
+        { label: "Savings buffer", value: "To be calculated", trend: "Cash and emergency runway", tone: "positive" },
+      ];
 
   return (
     <div className="dashboard-stack">
@@ -25,8 +41,9 @@ export function DashboardPreview() {
           <p className="eyebrow">Personal economic dashboard</p>
           <h1>Build a clearer picture before the next ripple.</h1>
           <p>
-            Your financial profile will anchor every scenario. Day 2 establishes the interface;
-            profile capture begins next.
+            {profile
+              ? `Your saved profile for ${profile.city} is ready to anchor deterministic what-if scenarios.`
+              : "Your financial profile will anchor every scenario. Complete it once, then update it whenever life changes."}
           </p>
         </div>
         <div className="page-heading__aside">
@@ -56,7 +73,7 @@ export function DashboardPreview() {
             }}
           >
             <TextField
-              hint="Day 3 will add natural-language interpretation and confirmation."
+              hint="Natural-language scenario interpretation arrives later in the MVP plan."
               label="Economic question"
               placeholder="What if RBI cuts the repo rate by 1%?"
             />
@@ -81,7 +98,7 @@ export function DashboardPreview() {
               <Button type="submit">
                 Preview scenario structure <Icon name="arrow" />
               </Button>
-              <span>Nothing is saved or calculated yet.</span>
+              <span>The profile is saved; scenario calculations are not connected yet.</span>
             </div>
           </form>
         </Card>
@@ -123,23 +140,23 @@ export function DashboardPreview() {
             <span>Source, formula and confidence treatments are part of the base component library.</span>
           </div>
         </div>
-        <Button onClick={() => setIsPreviewOpen(true)} size="sm" tone="secondary">
-          See the Day 2 preview
-        </Button>
+        <Link className="button button--secondary button--sm" href="/profile">
+          {profile ? "Review financial profile" : "Create financial profile"}
+        </Link>
       </section>
 
       <Dialog
-        description="The app shell is ready. Profiles, calculations and live scenarios are intentionally still gated by the delivery plan."
+        description="Your financial profile is now connected. Deterministic calculations and live scenarios remain gated by the delivery plan."
         onOpenChange={setIsPreviewOpen}
         open={isPreviewOpen}
         title="Scenario workspace is taking shape"
       >
         <ul className="dialog__list">
           <li>
-            <strong>Today:</strong> responsive controls, data states and evidence-ready confidence treatments.
+            <strong>Day 4:</strong> a private, editable financial profile with validated money and rate inputs.
           </li>
           <li>
-            <strong>Day 3:</strong> account access and protected dashboard routing.
+            <strong>Today:</strong> profile-aware cash-flow, debt and savings snapshots on this dashboard.
           </li>
           <li>
             <strong>Day 7:</strong> the first working repo-rate simulation.

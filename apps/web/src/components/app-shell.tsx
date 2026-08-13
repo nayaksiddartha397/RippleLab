@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 
 const navigation = [
   { href: "/dashboard", icon: "grid" as const, label: "Dashboard" },
+  { href: "/profile", icon: "user" as const, label: "Financial profile" },
   { href: "/design-system", icon: "layers" as const, label: "Design system" },
 ];
 
@@ -75,7 +76,7 @@ export function AppShell({
             <Icon name="spark" />
             <span>Educational simulation. Not financial advice.</span>
           </div>
-          <span className="build-label">MVP foundation / Day 3</span>
+          <span className="build-label">Personal profile / Day 4</span>
         </div>
       </aside>
 
