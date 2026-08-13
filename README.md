@@ -2,7 +2,7 @@
 
 RippleLab is an India-focused economic what-if simulator. It will connect a user's financial profile to deterministic scenario models, an inspectable causal graph, uncertainty ranges and source-backed explanations.
 
-This repository is the Day 1 foundation for a 30-day MVP build. The current vertical surface includes a runnable Next.js web app, a runnable FastAPI health service, a canonical shared schema, automated checks and CI.
+This repository contains the first three checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell and Supabase-ready authentication flow with protected dashboard routing.
 
 ## Product boundary
 
@@ -54,15 +54,29 @@ pnpm dev:api
 
 Open the web app at `http://localhost:3000` and the API health endpoint at `http://localhost:8000/health`.
 
+### Supabase authentication setup
+
+Create a Supabase project, then add these values to the repository-root `.env.local` file or the web process environment:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+In Supabase Auth URL Configuration, set the local Site URL to `http://localhost:3000` and allow `http://localhost:3000/auth/confirm`. Hosted email/password sign-up uses PKCE confirmation; password recovery returns through the same confirmation route before opening `/auth/update-password`.
+
+`SUPABASE_SERVICE_ROLE_KEY` is not needed by the web authentication flow and must never be exposed with a `NEXT_PUBLIC_` prefix. `RIPPLELAB_AUTH_TEST_MODE` is reserved for Playwright and is hard-disabled in production.
+
 ## Quality checks
 
-Run every core Day 1 check with one command:
+Run every core project check with one command:
 
 ```bash
 pnpm check
 ```
 
-This validates shared contracts, lints/type-checks/builds the web app, lints/formats/tests the API and scans repository files for common committed-secret patterns.
+This validates shared contracts, lints/type-checks/builds the web app, exercises accessibility and the authentication lifecycle in Chromium, lints/formats/tests the API and scans repository files for common committed-secret patterns.
 
 ## Environment variables
 

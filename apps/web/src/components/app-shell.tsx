@@ -8,11 +8,21 @@ import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/cn";
 
 const navigation = [
-  { href: "/", icon: "grid" as const, label: "Dashboard" },
+  { href: "/dashboard", icon: "grid" as const, label: "Dashboard" },
   { href: "/design-system", icon: "layers" as const, label: "Design system" },
 ];
 
-export function AppShell({ activePath, children }: { activePath: string; children: ReactNode }) {
+export function AppShell({
+  activePath,
+  children,
+  signOutAction,
+  userEmail,
+}: {
+  activePath: string;
+  children: ReactNode;
+  signOutAction?: () => Promise<void>;
+  userEmail?: string;
+}) {
   const [isNavigationOpen, setIsNavigationOpen] = useState(false);
 
   const closeNavigation = () => setIsNavigationOpen(false);
@@ -53,11 +63,19 @@ export function AppShell({ activePath, children }: { activePath: string; childre
         </nav>
 
         <div className="app-sidebar__footer">
+          {userEmail && signOutAction ? (
+            <div className="account-summary">
+              <span>{userEmail}</span>
+              <form action={signOutAction}>
+                <button type="submit">Sign out</button>
+              </form>
+            </div>
+          ) : null}
           <div className="sandbox-note">
             <Icon name="spark" />
             <span>Educational simulation. Not financial advice.</span>
           </div>
-          <span className="build-label">MVP foundation / Day 2</span>
+          <span className="build-label">MVP foundation / Day 3</span>
         </div>
       </aside>
 
@@ -85,7 +103,7 @@ export function AppShell({ activePath, children }: { activePath: string; childre
           </div>
           <div className="app-topbar__status">
             <span aria-hidden="true" className="status-pulse" />
-            <span>Design system ready</span>
+            <span>{userEmail ? "Private session active" : "Public preview"}</span>
           </div>
         </header>
         <main className="app-content">{children}</main>
