@@ -6,8 +6,8 @@ const days = [
   { day: 3, title: "Private accounts", detail: "Supabase-ready authentication, recovery and protected dashboard routing.", state: "complete" },
   { day: 4, title: "Financial profile", detail: "Five-step economic digital twin with validation, persistence and row ownership.", state: "complete" },
   { day: 5, title: "Simulation contract", detail: "Versioned scenarios, evidence, assumptions, confidence and causal graph types.", state: "complete" },
-  { day: 6, title: "Calculation primitives", detail: "EMI, deposits, Decimal-safe money and formula-level verification.", state: "next" },
-  { day: 7, title: "First live scenario", detail: "Profile-to-repo-rate end-to-end simulation and impact summary.", state: "planned" },
+  { day: 6, title: "Calculation primitives", detail: "EMI, deposits, Decimal-safe money and formula-level verification.", state: "complete" },
+  { day: 7, title: "First live scenario", detail: "Profile-to-repo-rate end-to-end simulation and impact summary.", state: "next" },
 ] as const;
 
 export const metadata = { title: "Build progress | RippleLab" };
@@ -26,20 +26,20 @@ export default function ProgressPage() {
       <section className="progress-hero">
         <div>
           <p className="eyebrow">30-day MVP build</p>
-          <h1>Five foundations built. The first calculation comes next.</h1>
-          <p>RippleLab is 5 days into a structured 30-day build. The private profile and trustworthy data contract now exist; Day 6 begins the deterministic economic engine.</p>
+          <h1>Six foundations built. The calculation engine is online.</h1>
+          <p>RippleLab is 6 days into a structured 30-day build. Loan and deposit calculations now run with explicit formulas, Decimal-safe money, versioned outputs and boundary tests.</p>
         </div>
-        <div className="progress-score" aria-label="Five of thirty days complete">
-          <strong>5</strong><span>of 30 days</span><div><i style={{ width: "16.67%" }} /></div><small>Week 1 foundation</small>
+        <div className="progress-score" aria-label="Six of thirty days complete">
+          <strong>6</strong><span>of 30 days</span><div><i style={{ width: "20%" }} /></div><small>Deterministic engine</small>
         </div>
       </section>
 
       <section aria-labelledby="delivered-heading" className="progress-delivered">
         <header><p className="eyebrow">Delivered so far</p><h2 id="delivered-heading">A working product spine, not a visual mockup.</h2></header>
         <div className="progress-principles">
-          <article><strong>Private profile</strong><span>Household cash flow, assets, housing, debt and goals.</span></article>
-          <article><strong>Exact units</strong><span>Integer paise, basis points and scenario-specific shock units.</span></article>
-          <article><strong>Evidence ready</strong><span>Citations, assumptions and confidence attach to causal links.</span></article>
+          <article><strong>Five primitives</strong><span>EMI, balance, transmission, rate reset and deposit interest.</span></article>
+          <article><strong>Exact arithmetic</strong><span>Integer paise, basis points and 50-digit Decimal intermediates.</span></article>
+          <article><strong>Auditable outputs</strong><span>Formula version, assumptions and rounding policy travel with every result.</span></article>
         </div>
       </section>
 
@@ -53,10 +53,24 @@ export default function ProgressPage() {
         ))}
       </section>
 
+      <section aria-labelledby="formula-ledger-heading" className="progress-formula-ledger">
+        <header>
+          <p className="eyebrow">Day 6 formula ledger</p>
+          <h2 id="formula-ledger-heading">Known inputs. Reproducible outputs.</h2>
+          <p>These are deterministic fixtures, not forecasts. Each value is calculated in paise with one documented final rounding step.</p>
+        </header>
+        <div>
+          <article><span>loan.emi.v1</span><strong>₹43,391.16</strong><p>Monthly EMI: ₹50 lakh, 8.50%, 240 months.</p></article>
+          <article><span>loan.outstanding_balance.v1</span><strong>₹44,06,359.16</strong><p>Principal remaining after 60 scheduled payments.</p></article>
+          <article><span>loan.floating_rate_reset.v1</span><strong>-₹2,189.36</strong><p>Monthly change after 70% of a 100 bps cut.</p></article>
+          <article><span>deposit.simple_interest.v1</span><strong>₹72,500.00</strong><p>Gross annual interest: ₹10 lakh at 7.25%.</p></article>
+        </div>
+      </section>
+
       <section className="progress-contract">
-        <div><p className="eyebrow">Day 5 contract</p><h2>Every future number must explain itself.</h2><p>The result model now requires model versions, annual impact in paise, uncertainty bounds, assumptions, citations and a scored confidence rationale.</p></div>
-        <div aria-label="Illustrative causal contract" className="progress-causal">
-          <span>Repo rate</span><b>basis points</b><i>→</i><span>Loan rate</span><b>assumption + source</b><i>→</i><span>Your EMI</span><b>impact + confidence</b>
+        <div><p className="eyebrow">Day 6 engine</p><h2>Every number carries its method.</h2><p>The engine keeps unrounded Decimal intermediates, rounds public money once to the nearest paise and returns the formula version plus its assumptions.</p></div>
+        <div aria-label="Illustrative rate reset calculation" className="progress-causal">
+          <span>Reference shock: -100 bps</span><b>70% pass-through</b><i>→</i><span>Loan reset: -70 bps</span><b>8.50% to 7.80%</b><i>→</i><span>EMI: -₹2,189.36</span><b>version + assumptions</b>
         </div>
       </section>
 

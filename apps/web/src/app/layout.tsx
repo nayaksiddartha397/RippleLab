@@ -1,11 +1,76 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "RippleLab | Personal economic simulations",
-  description:
-    "Explore how supported economic changes could affect your household under transparent assumptions.",
-};
+const fallbackOrigin = new URL(
+  "https://ripplelab-progress.nayaksiddartha397.chatgpt.site",
+);
+
+function requestOrigin(requestHeaders: Headers) {
+  const host = (
+    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host")
+  )
+    ?.split(",")[0]
+    ?.trim();
+  const forwardedProtocol = requestHeaders
+    .get("x-forwarded-proto")
+    ?.split(",")[0]
+    ?.trim();
+  const protocol =
+    forwardedProtocol === "http" || forwardedProtocol === "https"
+      ? forwardedProtocol
+      : host?.startsWith("localhost")
+        ? "http"
+        : "https";
+
+  if (!host) {
+    return fallbackOrigin;
+  }
+
+  try {
+    return new URL(`${protocol}://${host}`);
+  } catch {
+    return fallbackOrigin;
+  }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const origin = requestOrigin(await headers());
+  const socialImageUrl = new URL(
+    "/ripplelab-day-06-social.png",
+    origin,
+  ).toString();
+  const title = "RippleLab | Personal economic simulations";
+  const description =
+    "Explore how supported economic changes could affect your household under transparent assumptions.";
+
+  return {
+    metadataBase: origin,
+    title,
+    description,
+    openGraph: {
+      type: "website",
+      url: origin,
+      siteName: "RippleLab",
+      title,
+      description,
+      images: [
+        {
+          url: socialImageUrl,
+          width: 1536,
+          height: 1024,
+          alt: "RippleLab Day 6 deterministic calculation engine progress",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [socialImageUrl],
+    },
+  };
+}
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

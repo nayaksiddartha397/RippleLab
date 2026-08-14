@@ -688,6 +688,65 @@ select:disabled {
   padding: clamp(3rem, 7vw, 7rem) 0;
 }
 
+.progress-formula-ledger {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  margin-bottom: clamp(3rem, 7vw, 7rem);
+  padding: clamp(2rem, 5vw, 4rem);
+}
+
+.progress-formula-ledger header {
+  max-width: 48rem;
+}
+
+.progress-formula-ledger h2 {
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+  margin: var(--space-3) 0 var(--space-4);
+}
+
+.progress-formula-ledger header > p:not(.eyebrow),
+.progress-formula-ledger article p {
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+}
+
+.progress-formula-ledger > div {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+.progress-formula-ledger article {
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.progress-formula-ledger article span {
+  color: var(--color-ripple-700);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.progress-formula-ledger article strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.progress-formula-ledger article p {
+  font-size: 0.74rem;
+  margin: 0;
+}
+
 .progress-day {
   border-top: 2px solid var(--color-line);
   display: flex;
@@ -1897,6 +1956,10 @@ code {
   .progress-timeline {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .progress-formula-ledger > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -1925,6 +1988,7 @@ code {
   }
 
   .progress-principles,
+  .progress-formula-ledger > div,
   .progress-timeline {
     grid-template-columns: 1fr;
   }

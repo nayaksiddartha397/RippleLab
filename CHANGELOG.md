@@ -4,6 +4,14 @@ All notable RippleLab changes are recorded here. The project follows a daily MVP
 
 ## Unreleased
 
+### Day 6 - 2026-08-14
+
+- Added Decimal-safe EMI, scheduled outstanding-balance, linear rate-pass-through, floating-rate-reset and simple deposit-interest primitives.
+- Added immutable outputs carrying formula versions, assumptions and an explicit half-up paise-rounding policy.
+- Added coverage for known examples, zeros, bounds, negative validation, maturity and partial transmission.
+- Documented every formula, unit, rounding rule, supported boundary and excluded product assumption.
+- Updated the deployed progress page with a verified Day 6 formula ledger and the 6-of-30 checkpoint.
+
 ### Day 5 - 2026-08-13
 
 - Added the canonical JSON Schema v1 contract for five scenario families, profile snapshots, assumptions, citations, causal graphs, impacts, uncertainty and confidence.
