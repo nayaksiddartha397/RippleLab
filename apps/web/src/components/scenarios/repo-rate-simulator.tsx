@@ -1,7 +1,8 @@
 "use client";
 
 import type { SimulationResult } from "@ripplelab/contracts/simulation";
-import { useState, type FormEvent } from "react";
+import dynamic from "next/dynamic";
+import { useState, useSyncExternalStore, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -11,6 +12,32 @@ import { Icon } from "@/components/ui/icon";
 import { formatRupeesAndPaise, formatRupeesFromPaise } from "@/lib/profile/format";
 import type { FinancialProfile } from "@/lib/profile/types";
 import { buildRepoRateRequest } from "@/lib/scenarios/repo-rate";
+
+const CausalGraphExplorer = dynamic(
+  () =>
+    import("@/components/scenarios/causal-graph-explorer").then(
+      (module) => module.CausalGraphExplorer,
+    ),
+  {
+    loading: () => (
+      <Card aria-live="polite" className="repo-causal-card repo-causal-loading">
+        <p className="eyebrow">Interactive causal graph</p>
+        <h2>Preparing the inspectable economic path…</h2>
+      </Card>
+    ),
+    ssr: false,
+  },
+);
+
+const subscribeToHydration = () => () => undefined;
+
+function useIsHydrated() {
+  return useSyncExternalStore(
+    subscribeToHydration,
+    () => true,
+    () => false,
+  );
+}
 
 function numberFrom(formData: FormData, name: string) {
   return Number(formData.get(name));
@@ -45,6 +72,7 @@ export function RepoRateSimulator({
   const [result, setResult] = useState<SimulationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const isHydrated = useIsHydrated();
 
   async function submitScenario(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -137,9 +165,13 @@ export function RepoRateSimulator({
 
           {error ? <p className="repo-scenario-error" role="alert">{error}</p> : null}
           <div className="repo-form-actions">
-            <Button disabled={isPending} type="submit">
-              {isPending ? "Running deterministic engine…" : "Calculate my impact"}
-              {!isPending ? <Icon name="arrow" /> : null}
+            <Button disabled={!isHydrated || isPending} type="submit">
+              {isPending
+                ? "Running deterministic engine…"
+                : isHydrated
+                  ? "Calculate my impact"
+                  : "Preparing secure calculator…"}
+              {isHydrated && !isPending ? <Icon name="arrow" /> : null}
             </Button>
             <span>Money is sent as integer paise; rates are sent as basis points.</span>
           </div>
@@ -228,6 +260,8 @@ export function RepoRateSimulator({
           </Card>
         )}
       </div>
+
+      {result ? <CausalGraphExplorer key={result.requestId} result={result} /> : null}
     </div>
   );
 }

@@ -240,7 +240,7 @@ select:disabled {
 
 .app-topbar {
   align-items: center;
-  background: rgb(245 247 251 / 0.84);
+  background: #f5f7fb;
   border-bottom: 1px solid var(--color-line);
   display: flex;
   height: 4.75rem;
@@ -266,6 +266,7 @@ select:disabled {
 
 .app-topbar__status {
   align-items: center;
+  color: #46556a;
   display: inline-flex;
   gap: var(--space-2);
 }
@@ -1934,8 +1935,7 @@ code {
 }
 
 .repo-scenario-form {
-  position: sticky;
-  top: calc(4.4rem + var(--space-6));
+  position: static;
 }
 
 .repo-profile-strip {
@@ -2188,6 +2188,319 @@ code {
   padding-left: 1.1rem;
 }
 
+.repo-causal-card {
+  display: grid;
+  gap: var(--space-4);
+  grid-column: 1 / -1;
+  overflow: hidden;
+  padding: var(--space-6);
+}
+
+.repo-causal-loading h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  margin: 0;
+}
+
+.repo-causal-instructions {
+  color: var(--color-ink-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  margin: calc(-1 * var(--space-2)) 0 0;
+  max-width: 54rem;
+}
+
+.repo-causal-legend {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.repo-causal-legend span {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.4rem 0.65rem;
+  text-transform: uppercase;
+}
+
+.repo-causal-legend__policy {
+  background: var(--color-ink);
+  color: white;
+}
+
+.repo-causal-legend__financial_product {
+  background: var(--color-ripple-50);
+  border-color: var(--color-ripple-100) !important;
+  color: var(--color-ripple-700);
+}
+
+.repo-causal-legend__household {
+  background: var(--color-signal-50);
+  border-color: #efd89d !important;
+  color: #845800;
+}
+
+.repo-causal-legend i {
+  color: var(--color-ink-muted);
+  font-size: 0.7rem;
+  font-style: normal;
+  margin-left: auto;
+}
+
+.repo-causal-workspace {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.85fr);
+  min-height: 35rem;
+  overflow: hidden;
+}
+
+.repo-causal-canvas {
+  background:
+    radial-gradient(circle at 18% 22%, rgb(8 126 139 / 0.08), transparent 28%),
+    linear-gradient(145deg, #f8fbfc, #eef4f5);
+  min-height: 35rem;
+  position: relative;
+}
+
+.repo-causal-canvas .react-flow__renderer {
+  cursor: grab;
+}
+
+.repo-causal-canvas .react-flow__renderer:active {
+  cursor: grabbing;
+}
+
+.repo-causal-canvas .react-flow__node-ripple {
+  background: transparent;
+  border: 0;
+  width: 12rem;
+}
+
+.causal-node {
+  background: white;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 12px 28px rgb(23 32 51 / 0.1);
+  display: grid;
+  gap: 0.4rem;
+  min-height: 6.7rem;
+  padding: var(--space-4);
+  position: relative;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.causal-node > span {
+  color: var(--color-ink-muted);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.causal-node > strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.15;
+}
+
+.causal-node > small {
+  color: var(--color-ink-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.causal-node--policy {
+  background: var(--color-ink);
+  border-color: var(--color-ink);
+  color: white;
+}
+
+.causal-node--policy > span,
+.causal-node--policy > small {
+  color: #b8c6d5;
+}
+
+.causal-node--financial_product {
+  border-color: var(--color-ripple-500);
+}
+
+.causal-node--household {
+  border-color: var(--color-signal-500);
+}
+
+.causal-node .react-flow__handle {
+  background: white;
+  border: 2px solid var(--color-ripple-600);
+  height: 0.7rem;
+  width: 0.7rem;
+}
+
+.causal-node--policy .react-flow__handle {
+  background: var(--color-ink);
+}
+
+.react-flow__node-ripple.selected .causal-node,
+.react-flow__node-ripple:focus-visible .causal-node {
+  border-color: var(--color-signal-500);
+  box-shadow: 0 0 0 4px rgb(224 161 38 / 0.18), 0 18px 34px rgb(23 32 51 / 0.14);
+  transform: translateY(-2px);
+}
+
+.react-flow__edge:focus-visible .react-flow__edge-path {
+  stroke: var(--color-signal-500) !important;
+  stroke-width: 3px !important;
+}
+
+.react-flow__edge-text {
+  fill: var(--color-ink-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.react-flow__controls {
+  border: 1px solid var(--color-line);
+  box-shadow: 0 8px 20px rgb(23 32 51 / 0.12);
+}
+
+.react-flow__controls-button {
+  border-color: var(--color-line) !important;
+}
+
+.react-flow__minimap {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 20px rgb(23 32 51 / 0.1);
+}
+
+.repo-causal-inspector {
+  background: var(--color-ink);
+  color: white;
+  display: grid;
+  gap: var(--space-5);
+  overflow-y: auto;
+  padding: var(--space-6);
+}
+
+.repo-causal-inspector > header {
+  align-items: flex-start;
+  display: flex;
+  gap: var(--space-4);
+  justify-content: space-between;
+}
+
+.repo-causal-inspector .eyebrow {
+  color: #93d3dc;
+  margin-bottom: var(--space-2);
+}
+
+.repo-causal-inspector h3,
+.repo-causal-inspector h4,
+.repo-causal-inspector p {
+  margin: 0;
+}
+
+.repo-causal-inspector h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.repo-causal-inspector h4 {
+  color: #91a4b9;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+}
+
+.repo-causal-inspector section,
+.repo-causal-inspector footer {
+  border-top: 1px solid rgb(255 255 255 / 0.13);
+  padding-top: var(--space-4);
+}
+
+.repo-causal-inspector section > p,
+.repo-causal-inspector footer p {
+  color: #c2cedb;
+  font-size: 0.77rem;
+  line-height: 1.55;
+}
+
+.repo-causal-inspector code {
+  background: rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(255 255 255 / 0.13);
+  border-radius: var(--radius-sm);
+  color: #f4d17e;
+  display: block;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  padding: var(--space-3);
+}
+
+.repo-causal-inspector section > small {
+  color: #91a4b9;
+  display: block;
+  font-size: 0.65rem;
+  margin-top: var(--space-2);
+}
+
+.repo-causal-assumptions,
+.repo-causal-sources {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.repo-causal-assumptions li,
+.repo-causal-sources li {
+  background: rgb(255 255 255 / 0.06);
+  border-radius: var(--radius-sm);
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.repo-causal-assumptions li > span {
+  align-items: baseline;
+  display: flex;
+  font-size: 0.73rem;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.repo-causal-assumptions b {
+  color: #f4d17e;
+}
+
+.repo-causal-assumptions p,
+.repo-causal-sources span {
+  color: #aebdcb;
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.repo-causal-sources a {
+  color: #7dd5df;
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.repo-causal-inspector footer strong {
+  color: #f4d17e;
+  display: block;
+  font-size: 0.78rem;
+  margin-bottom: var(--space-2);
+}
+
 @media (max-width: 920px) {
   .app-shell {
     display: block;
@@ -2289,6 +2602,14 @@ code {
   .repo-scenario-form {
     position: static;
   }
+
+  .repo-causal-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .repo-causal-inspector {
+    max-height: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2381,6 +2702,27 @@ code {
 
   .repo-profile-strip {
     grid-template-columns: 1fr;
+  }
+
+  .repo-causal-card {
+    padding: var(--space-5);
+  }
+
+  .repo-causal-legend i {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .repo-causal-canvas {
+    min-height: 27rem;
+  }
+
+  .react-flow__minimap {
+    display: none;
+  }
+
+  .repo-causal-inspector > header {
+    flex-direction: column;
   }
 
   .repo-net-result {

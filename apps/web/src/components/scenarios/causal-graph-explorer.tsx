@@ -1,0 +1,432 @@
+"use client";
+
+import type {
+  Assumption,
+  CausalEdge,
+  CausalNode,
+  Citation,
+  Confidence,
+  SimulationResult,
+} from "@ripplelab/contracts/simulation";
+import {
+  Background,
+  BackgroundVariant,
+  Controls,
+  Handle,
+  MarkerType,
+  MiniMap,
+  Position,
+  ReactFlow,
+  type Edge,
+  type Node,
+  type NodeProps,
+} from "@xyflow/react";
+import { useMemo, useState } from "react";
+
+import { Card, CardHeader } from "@/components/ui/card";
+import { ConfidenceBadge } from "@/components/ui/confidence-badge";
+import { formatRupeesAndPaise } from "@/lib/profile/format";
+
+type Selection = { id: string; type: "node" | "edge" };
+
+type RippleNodeData = {
+  graphNode: CausalNode;
+  valueLabel: string;
+};
+
+type RippleFlowNode = Node<RippleNodeData, "ripple">;
+type RippleFlowEdge = Edge<{ graphEdge: CausalEdge }, "smoothstep">;
+
+type FormulaReference = {
+  expression: string;
+  version: string;
+};
+
+type InspectorDetails = {
+  assumptions: ReadonlyArray<Assumption>;
+  citations: ReadonlyArray<Citation>;
+  confidence: Confidence;
+  eyebrow: string;
+  formula: FormulaReference;
+  lag?: string;
+  mechanism: string;
+  title: string;
+};
+
+const positions: Record<string, { x: number; y: number }> = {
+  "repo-rate": { x: 0, y: 150 },
+  "loan-rate": { x: 280, y: 40 },
+  "monthly-emi": { x: 570, y: 40 },
+  "deposit-rate": { x: 280, y: 270 },
+  "deposit-income": { x: 570, y: 270 },
+};
+
+const categoryLabels: Record<CausalNode["kind"], string> = {
+  policy: "Policy",
+  market: "Market",
+  financial_product: "Financial product",
+  household: "Household",
+  outcome: "Outcome",
+};
+
+const formulaReferences: Record<string, FormulaReference> = {
+  "repo-rate": {
+    expression: "modeled repo rate = current repo rate + selected change",
+    version: "scenario.repo_rate_change.v1",
+  },
+  "loan-rate": {
+    expression: "loan-rate change = repo-rate change × loan pass-through",
+    version: "rates.linear_pass_through.v1",
+  },
+  "monthly-emi": {
+    expression: "EMI = P × r × (1 + r)ⁿ / ((1 + r)ⁿ - 1)",
+    version: "loan.floating_rate_reset.v1",
+  },
+  "deposit-rate": {
+    expression: "deposit-rate change = repo-rate change × deposit pass-through",
+    version: "rates.linear_pass_through.v1",
+  },
+  "deposit-income": {
+    expression: "interest = principal × annual rate × term / day-count basis",
+    version: "deposit.simple_interest.v1",
+  },
+  "repo-to-loan-rate": {
+    expression: "loan-rate change = repo-rate change × loan pass-through",
+    version: "rates.linear_pass_through.v1",
+  },
+  "loan-rate-to-emi": {
+    expression: "reset rate and remaining term are applied to the EMI formula",
+    version: "loan.floating_rate_reset.v1",
+  },
+  "repo-to-deposit-rate": {
+    expression: "deposit-rate change = repo-rate change × deposit pass-through",
+    version: "rates.linear_pass_through.v1",
+  },
+  "deposit-rate-to-income": {
+    expression: "reset gross interest - current gross interest",
+    version: "deposit.simple_interest.v1",
+  },
+};
+
+function formatNodeValue(node: CausalNode) {
+  if (node.value === undefined) {
+    return "No numeric value";
+  }
+  if (node.unit === "paise" || node.unit === "paise_per_year") {
+    return `${formatRupeesAndPaise(node.value)}${node.unit === "paise_per_year" ? " / year" : ""}`;
+  }
+  if (node.unit === "basis_points") {
+    return node.id === "repo-rate" ? `${node.value} bps` : `${(node.value / 100).toFixed(2)}%`;
+  }
+  return `${node.value}${node.unit ? ` ${node.unit.replaceAll("_", " ")}` : ""}`;
+}
+
+function formatAssumption(assumption: Assumption) {
+  if (typeof assumption.value !== "number") {
+    return String(assumption.value);
+  }
+  if (assumption.unit === "ratio") {
+    return `${Math.round(assumption.value * 100)}%`;
+  }
+  if (assumption.unit === "basis_points") {
+    return `${(assumption.value / 100).toFixed(2)}%`;
+  }
+  return `${assumption.value} ${assumption.unit.replaceAll("_", " ")}`;
+}
+
+function confidenceLabel(level: Confidence["level"]) {
+  return `${level.charAt(0).toUpperCase()}${level.slice(1)}` as "Low" | "Medium" | "High";
+}
+
+function uniqueIds(values: ReadonlyArray<ReadonlyArray<string>>) {
+  return [...new Set(values.flat())];
+}
+
+function relatedItems<T extends { id: string }>(items: ReadonlyArray<T>, ids: ReadonlyArray<string>) {
+  const wanted = new Set(ids);
+  return items.filter((item) => wanted.has(item.id));
+}
+
+function nodeDetails(result: SimulationResult, node: CausalNode): InspectorDetails {
+  const relatedEdges = result.causalGraph.edges.filter(
+    (edge) => edge.source === node.id || edge.target === node.id,
+  );
+  const incomingEdge = relatedEdges.find((edge) => edge.target === node.id);
+  const outgoingEdge = relatedEdges.find((edge) => edge.source === node.id);
+  const impact = result.impacts.find((item) => item.causalNodeId === node.id);
+  const assumptionIds = uniqueIds(relatedEdges.map((edge) => edge.assumptionIds));
+  const citationIds = uniqueIds(relatedEdges.map((edge) => edge.citationIds));
+
+  return {
+    assumptions: relatedItems(result.assumptions, assumptionIds),
+    citations: relatedItems(result.citations, citationIds),
+    confidence:
+      impact?.confidence ?? incomingEdge?.confidence ?? outgoingEdge?.confidence ?? result.confidence,
+    eyebrow: `${categoryLabels[node.kind]} node`,
+    formula: formulaReferences[node.id] ?? formulaReferences["repo-rate"],
+    mechanism:
+      impact?.mechanism ??
+      incomingEdge?.mechanism ??
+      outgoingEdge?.mechanism ??
+      "This node is part of the engine-returned causal path.",
+    title: node.label,
+  };
+}
+
+function edgeDetails(result: SimulationResult, edge: CausalEdge): InspectorDetails {
+  const source = result.causalGraph.nodes.find((node) => node.id === edge.source);
+  const target = result.causalGraph.nodes.find((node) => node.id === edge.target);
+  const lag =
+    edge.lagMonths.minimum === edge.lagMonths.maximum
+      ? `${edge.lagMonths.minimum} months`
+      : `${edge.lagMonths.minimum}-${edge.lagMonths.maximum} months`;
+
+  return {
+    assumptions: relatedItems(result.assumptions, edge.assumptionIds),
+    citations: relatedItems(result.citations, edge.citationIds),
+    confidence: edge.confidence,
+    eyebrow: `${edge.direction} causal link`,
+    formula: formulaReferences[edge.id] ?? formulaReferences["repo-rate"],
+    lag,
+    mechanism: edge.mechanism,
+    title: `${source?.label ?? edge.source} → ${target?.label ?? edge.target}`,
+  };
+}
+
+function RippleNode({ data }: NodeProps<RippleFlowNode>) {
+  const { graphNode, valueLabel } = data;
+
+  return (
+    <div className={`causal-node causal-node--${graphNode.kind}`}>
+      <Handle isConnectable={false} position={Position.Left} type="target" />
+      <span>{categoryLabels[graphNode.kind]}</span>
+      <strong>{graphNode.label}</strong>
+      <small>{valueLabel}</small>
+      <Handle isConnectable={false} position={Position.Right} type="source" />
+    </div>
+  );
+}
+
+const nodeTypes = { ripple: RippleNode };
+
+export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
+  const initialId = result.causalGraph.nodes[0]?.id ?? "repo-rate";
+  const [selection, setSelection] = useState<Selection>({ id: initialId, type: "node" });
+
+  const nodes = useMemo<RippleFlowNode[]>(
+    () =>
+      result.causalGraph.nodes.map((graphNode, index) => {
+        const valueLabel = formatNodeValue(graphNode);
+        return {
+          id: graphNode.id,
+          type: "ripple",
+          position: positions[graphNode.id] ?? { x: index * 220, y: 150 },
+          data: { graphNode, valueLabel },
+          draggable: false,
+          connectable: false,
+          focusable: true,
+          selectable: true,
+          selected: selection.type === "node" && selection.id === graphNode.id,
+          ariaRole: "button",
+          ariaLabel: `${graphNode.label}, ${categoryLabels[graphNode.kind]} node, ${valueLabel}. Press Enter or Space to inspect.`,
+        };
+      }),
+    [result.causalGraph.nodes, selection],
+  );
+
+  const edges = useMemo<RippleFlowEdge[]>(
+    () =>
+      result.causalGraph.edges.map((graphEdge) => {
+        const source = result.causalGraph.nodes.find((node) => node.id === graphEdge.source);
+        const target = result.causalGraph.nodes.find((node) => node.id === graphEdge.target);
+        const selected = selection.type === "edge" && selection.id === graphEdge.id;
+        const color = selected ? "#e0a126" : "#087e8b";
+        return {
+          id: graphEdge.id,
+          source: graphEdge.source,
+          target: graphEdge.target,
+          type: "smoothstep",
+          data: { graphEdge },
+          focusable: true,
+          selectable: true,
+          selected,
+          ariaRole: "button",
+          ariaLabel: `${source?.label ?? graphEdge.source} to ${target?.label ?? graphEdge.target}. ${graphEdge.mechanism} Press Enter or Space to inspect.`,
+          interactionWidth: 28,
+          markerEnd: { color, height: 18, type: MarkerType.ArrowClosed, width: 18 },
+          style: { stroke: color, strokeWidth: selected ? 3 : 2 },
+        };
+      }),
+    [result.causalGraph.edges, result.causalGraph.nodes, selection],
+  );
+
+  function select(next: Selection) {
+    setSelection((current) =>
+      current.type === next.type && current.id === next.id ? current : next,
+    );
+  }
+
+  const selectedNode = result.causalGraph.nodes.find(
+    (node) => selection.type === "node" && node.id === selection.id,
+  );
+  const selectedEdge = result.causalGraph.edges.find(
+    (edge) => selection.type === "edge" && edge.id === selection.id,
+  );
+  const details = selectedEdge
+    ? edgeDetails(result, selectedEdge)
+    : nodeDetails(result, selectedNode ?? result.causalGraph.nodes[0]);
+
+  return (
+    <Card className="repo-causal-card" elevated>
+      <CardHeader
+        eyebrow="Interactive causal graph"
+        title="Trace the result from policy decision to personal cash flow"
+      />
+      <p className="repo-causal-instructions">
+        Select a node or arrow to inspect it. Keyboard: Tab through the graph, then press Enter or
+        Space. Use the controls to zoom or fit the complete path.
+      </p>
+      <div className="repo-causal-legend" aria-label="Node categories">
+        <span className="repo-causal-legend__policy">Policy</span>
+        <span className="repo-causal-legend__financial_product">Financial product</span>
+        <span className="repo-causal-legend__household">Household</span>
+        <i>Amber indicates the selected relationship.</i>
+      </div>
+
+      <div className="repo-causal-workspace">
+        <div className="repo-causal-canvas" aria-label="Repo-rate causal graph">
+          <ReactFlow<RippleFlowNode, RippleFlowEdge>
+            ariaLabelConfig={{
+              "controls.ariaLabel": "Causal graph view controls",
+              "controls.fitView.ariaLabel": "Fit complete causal graph",
+              "controls.zoomIn.ariaLabel": "Zoom into causal graph",
+              "controls.zoomOut.ariaLabel": "Zoom out of causal graph",
+              "minimap.ariaLabel": "Causal graph overview",
+            }}
+            autoPanOnNodeFocus
+            colorMode="light"
+            deleteKeyCode={null}
+            disableKeyboardA11y={false}
+            edges={edges}
+            edgesFocusable
+            edgesReconnectable={false}
+            elementsSelectable
+            fitView
+            fitViewOptions={{ maxZoom: 1.05, padding: 0.18 }}
+            minZoom={0.45}
+            nodes={nodes}
+            nodesConnectable={false}
+            nodesDraggable={false}
+            nodesFocusable
+            nodeTypes={nodeTypes}
+            onEdgeClick={(_, edge) => select({ id: edge.id, type: "edge" })}
+            onEdgesChange={(changes) => {
+              const change = changes.find((item) => item.type === "select" && item.selected);
+              if (change?.type === "select") {
+                select({ id: change.id, type: "edge" });
+              }
+            }}
+            onNodeClick={(_, node) => select({ id: node.id, type: "node" })}
+            onNodesChange={(changes) => {
+              const change = changes.find((item) => item.type === "select" && item.selected);
+              if (change?.type === "select") {
+                select({ id: change.id, type: "node" });
+              }
+            }}
+            panOnScroll
+            preventScrolling={false}
+            proOptions={{ hideAttribution: false }}
+            zoomOnDoubleClick={false}
+          >
+            <Background color="#cbd8dd" gap={24} size={1.2} variant={BackgroundVariant.Dots} />
+            <MiniMap
+              aria-label="Causal graph overview"
+              maskColor="rgb(23 32 51 / 0.08)"
+              nodeColor={(node) => {
+                const kind = (node.data as RippleNodeData).graphNode.kind;
+                return kind === "policy" ? "#172033" : kind === "household" ? "#e0a126" : "#087e8b";
+              }}
+              nodeStrokeWidth={3}
+              pannable
+              zoomable
+            />
+            <Controls fitViewOptions={{ maxZoom: 1.05, padding: 0.18 }} showInteractive={false} />
+          </ReactFlow>
+        </div>
+
+        <aside aria-live="polite" className="repo-causal-inspector" data-testid="causal-inspector">
+          <header>
+            <div>
+              <p className="eyebrow">{details.eyebrow}</p>
+              <h3>{details.title}</h3>
+            </div>
+            <ConfidenceBadge
+              detail={details.confidence.rationale}
+              level={confidenceLabel(details.confidence.level)}
+            />
+          </header>
+
+          <section>
+            <h4>Mechanism</h4>
+            <p>{details.mechanism}</p>
+          </section>
+
+          <section>
+            <h4>Formula</h4>
+            <code>{details.formula.expression}</code>
+            <small>{details.formula.version}</small>
+          </section>
+
+          {details.lag ? (
+            <section>
+              <h4>Modeled lag</h4>
+              <p>{details.lag}</p>
+            </section>
+          ) : null}
+
+          <section>
+            <h4>Assumptions</h4>
+            {details.assumptions.length ? (
+              <ul className="repo-causal-assumptions">
+                {details.assumptions.map((assumption) => (
+                  <li key={assumption.id}>
+                    <span>
+                      <strong>{assumption.label}</strong>
+                      <b>{formatAssumption(assumption)}</b>
+                    </span>
+                    <p>{assumption.rationale}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No additional assumption is required for this selected policy input.</p>
+            )}
+          </section>
+
+          <section>
+            <h4>Source</h4>
+            {details.citations.length ? (
+              <ul className="repo-causal-sources">
+                {details.citations.map((citation) => (
+                  <li key={citation.id}>
+                    <a href={citation.url} rel="noreferrer" target="_blank">
+                      {citation.title}
+                    </a>
+                    <span>{citation.publisher} · {citation.locator}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>This value comes from the saved profile or selected scenario rather than an external dataset.</p>
+            )}
+          </section>
+
+          <footer>
+            <strong>{details.confidence.score}/100 confidence</strong>
+            <p>{details.confidence.rationale}</p>
+          </footer>
+        </aside>
+      </div>
+    </Card>
+  );
+}

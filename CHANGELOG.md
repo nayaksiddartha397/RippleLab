@@ -4,6 +4,14 @@ All notable RippleLab changes are recorded here. The project follows a daily MVP
 
 ## Unreleased
 
+### Day 8 - 2026-08-14
+
+- Added a React Flow causal graph driven directly by the repo-rate simulation result.
+- Added categorized policy, financial-product and household nodes with directional edges, minimap, zoom and fit controls.
+- Added a synchronized inspector for mechanisms, formula references, assumptions, lag ranges, RBI source context and confidence.
+- Added pointer, touch and keyboard selection with read-only graph behavior and focused accessibility coverage.
+- Updated the deployed progress experience to the 8-of-30 causal-graph checkpoint.
+
 ### Day 7 - 2026-08-14
 
 - Added the first complete profile-to-repo-rate simulation through the signed-in Next.js experience and FastAPI economic engine.

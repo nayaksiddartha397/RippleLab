@@ -77,7 +77,7 @@ export function AppShell({
             <Icon name="spark" />
             <span>Educational simulation. Not financial advice.</span>
           </div>
-          <span className="build-label">Repo-rate vertical slice / Day 7</span>
+          <span className="build-label">Inspectable causal graph / Day 8</span>
         </div>
       </aside>
 

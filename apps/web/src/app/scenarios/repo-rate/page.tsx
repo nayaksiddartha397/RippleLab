@@ -34,11 +34,12 @@ export default async function RepoRateScenarioPage() {
       <div className="repo-scenario-page">
         <section className="page-heading">
           <div>
-            <p className="eyebrow">First end-to-end scenario</p>
+            <p className="eyebrow">First inspectable scenario</p>
             <h1>Translate a repo-rate change into your cash flow.</h1>
             <p>
               RippleLab sends your saved exposure and explicit assumptions to the deterministic
-              engine, then separates calculated money from model uncertainty.
+              engine, then separates calculated money from model uncertainty and exposes every
+              material causal link for inspection.
             </p>
           </div>
           <div className="page-heading__aside">

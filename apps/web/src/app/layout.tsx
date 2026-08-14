@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
 const fallbackOrigin = new URL(
@@ -59,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: socialImageUrl,
           width: 1536,
           height: 1024,
-          alt: "RippleLab Day 7 personal repo-rate simulation progress",
+          alt: "RippleLab Day 8 inspectable causal graph progress",
         },
       ],
     },
