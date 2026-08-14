@@ -4,6 +4,15 @@ All notable RippleLab changes are recorded here. The project follows a daily MVP
 
 ## Unreleased
 
+### Day 7 - 2026-08-14
+
+- Added the first complete profile-to-repo-rate simulation through the signed-in Next.js experience and FastAPI economic engine.
+- Added configurable loan/deposit pass-through, remaining-term and deposit-rate assumptions with human-readable API errors.
+- Replaced the illustrative repo-rate result with an engine-generated golden result and deterministic sensitivity bounds.
+- Added a personal before/after impact summary that explicitly separates calculated money from assumption-driven uncertainty.
+- Added full browser coverage for authentication, saved-profile loading, FastAPI calculation, accessibility and assumption changes.
+- Updated the dashboard and deployed progress page to the 7-of-30 vertical-slice checkpoint.
+
 ### Day 6 - 2026-08-14
 
 - Added Decimal-safe EMI, scheduled outstanding-balance, linear rate-pass-through, floating-rate-reset and simple deposit-interest primitives.

@@ -54,7 +54,7 @@ class Citation(ContractModel):
 class Assumption(ContractModel):
     id: str = Field(pattern=r"^[a-z][a-zA-Z0-9]{2,63}$")
     label: str = Field(min_length=1, max_length=120)
-    value: float | str | bool
+    value: int | float | str | bool
     unit: Literal[
         "basis_points",
         "percentage_points",
@@ -174,3 +174,67 @@ class ContractValidationResponse(ContractModel):
     schemaVersion: SchemaVersion
     scenarioType: ScenarioType
     requestId: UUID
+
+
+class CausalNode(ContractModel):
+    id: str = Field(pattern=r"^[a-z][a-z0-9-]{2,63}$")
+    label: str = Field(min_length=1, max_length=120)
+    kind: Literal["policy", "market", "financial_product", "household", "outcome"]
+    value: int | float | None = None
+    unit: str | None = None
+
+
+class LagMonths(ContractModel):
+    minimum: int = Field(ge=0, le=120)
+    maximum: int = Field(ge=0, le=120)
+
+
+class CausalEdge(ContractModel):
+    id: str = Field(pattern=r"^[a-z][a-z0-9-]{2,63}$")
+    source: str
+    target: str
+    direction: Literal["positive", "negative", "mixed"]
+    mechanism: str = Field(min_length=1, max_length=500)
+    lagMonths: LagMonths
+    assumptionIds: list[str]
+    citationIds: list[str]
+    confidence: Confidence
+
+
+class CausalGraph(ContractModel):
+    nodes: list[CausalNode] = Field(min_length=1)
+    edges: list[CausalEdge] = Field(min_length=1)
+
+
+class Impact(ContractModel):
+    id: str = Field(pattern=r"^[a-z][a-z0-9-]{2,63}$")
+    label: str = Field(min_length=1, max_length=120)
+    direction: Literal["benefit", "cost", "neutral", "uncertain"]
+    annualImpactPaise: int
+    mechanism: str = Field(min_length=1, max_length=500)
+    confidence: Confidence
+    causalNodeId: str
+
+
+class UncertaintyRange(ContractModel):
+    p10AnnualImpactPaise: int
+    p50AnnualImpactPaise: int
+    p90AnnualImpactPaise: int
+    method: Literal["deterministic_bounds", "monte_carlo"]
+
+
+class SimulationResult(ContractModel):
+    schemaVersion: SchemaVersion
+    requestId: UUID
+    scenarioType: ScenarioType
+    modelVersion: str = Field(pattern=r"^[0-9]+\.[0-9]+\.[0-9]+$")
+    generatedAt: datetime
+    currency: Literal["INR"]
+    annualNetImpactPaise: int
+    confidence: Confidence
+    uncertainty: UncertaintyRange
+    impacts: list[Impact] = Field(min_length=1)
+    causalGraph: CausalGraph
+    assumptions: list[Assumption]
+    citations: list[Citation] = Field(min_length=1)
+    warnings: list[str]

@@ -14,6 +14,15 @@ export function formatRupeesFromPaise(paise: number) {
   }).format(paise / 100);
 }
 
+export function formatRupeesAndPaise(paise: number) {
+  return new Intl.NumberFormat("en-IN", {
+    currency: "INR",
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+    style: "currency",
+  }).format(paise / 100);
+}
+
 export function labelFromValue(value: string) {
   return value
     .split("_")

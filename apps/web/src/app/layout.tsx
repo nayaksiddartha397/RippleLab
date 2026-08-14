@@ -37,7 +37,7 @@ function requestOrigin(requestHeaders: Headers) {
 export async function generateMetadata(): Promise<Metadata> {
   const origin = requestOrigin(await headers());
   const socialImageUrl = new URL(
-    "/ripplelab-day-06-social.png",
+    "/og.png",
     origin,
   ).toString();
   const title = "RippleLab | Personal economic simulations";
@@ -59,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: socialImageUrl,
           width: 1536,
           height: 1024,
-          alt: "RippleLab Day 6 deterministic calculation engine progress",
+          alt: "RippleLab Day 7 personal repo-rate simulation progress",
         },
       ],
     },

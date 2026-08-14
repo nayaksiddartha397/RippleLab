@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { isAuthTestMode, TEST_SESSION_COOKIE } from "@/lib/auth/test-mode";
 import { getSupabasePublicConfig } from "@/lib/supabase/config";
 
-const protectedPaths = ["/dashboard", "/profile"];
+const protectedPaths = ["/dashboard", "/profile", "/scenarios"];
 const publicAuthPaths = ["/auth/sign-in", "/auth/sign-up"];
 
 function isPathWithin(pathname: string, roots: string[]) {
@@ -75,5 +75,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/auth/sign-in", "/auth/sign-up"],
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/scenarios/:path*",
+    "/auth/sign-in",
+    "/auth/sign-up",
+  ],
 };

@@ -1,19 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
 import { Card, CardHeader } from "@/components/ui/card";
 import { ConfidenceBadge } from "@/components/ui/confidence-badge";
-import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
-import { SelectField, TextField } from "@/components/ui/form-field";
 import { formatRupeesFromPaise } from "@/lib/profile/format";
 import type { FinancialProfile } from "@/lib/profile/types";
 
 export function DashboardPreview({ profile }: { profile: FinancialProfile | null }) {
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const monthlyIncome = profile ? profile.monthlyTakeHomePaise + profile.monthlyOtherIncomePaise : 0;
   const monthlyOutgo = profile
     ? profile.monthlyEssentialExpensesPaise + profile.monthlyDiscretionaryExpensesPaise + profile.monthlyRentPaise + profile.monthlyEmiPaise
@@ -64,48 +59,23 @@ export function DashboardPreview({ profile }: { profile: FinancialProfile | null
 
       <section className="dashboard-grid">
         <Card className="scenario-card" elevated>
-          <CardHeader eyebrow="Scenario builder" title="What would you like to explore?" />
-          <form
-            className="scenario-form"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setIsPreviewOpen(true);
-            }}
-          >
-            <TextField
-              hint="Natural-language scenario interpretation arrives later in the MVP plan."
-              label="Economic question"
-              placeholder="What if RBI cuts the repo rate by 1%?"
-            />
-            <div className="scenario-form__row">
-              <SelectField
-                label="Scenario family"
-                options={[
-                  { label: "Repo-rate change", value: "repo" },
-                  { label: "Inflation increase", value: "inflation" },
-                  { label: "Oil-price increase", value: "oil" },
-                ]}
-              />
-              <SelectField
-                label="View"
-                options={[
-                  { label: "Personal impact", value: "personal" },
-                  { label: "Representative persona", value: "persona" },
-                ]}
-              />
-            </div>
-            <div className="scenario-form__actions">
-              <Button type="submit">
-                Preview scenario structure <Icon name="arrow" />
-              </Button>
-              <span>The profile is saved; scenario calculations are not connected yet.</span>
-            </div>
-          </form>
+          <CardHeader eyebrow="Scenario builder" title="Run the first live simulation" />
+          <div className="scenario-live-card">
+            <p>What if RBI cuts the repo rate by 1 percentage point?</p>
+            <ul>
+              <li>Use your saved home-loan and fixed-deposit balances.</li>
+              <li>Adjust loan and deposit pass-through assumptions.</li>
+              <li>See deterministic cash-flow outputs separately from uncertainty.</li>
+            </ul>
+            <Link className="button button--primary button--md" href={profile ? "/scenarios/repo-rate" : "/profile"}>
+              {profile ? "Run repo-rate simulation" : "Create profile first"} <Icon name="arrow" />
+            </Link>
+          </div>
         </Card>
 
         <Card className="causal-preview">
           <CardHeader
-            action={<span className="readiness-pill">Coming Day 7</span>}
+            action={<span className="readiness-pill">Live now</span>}
             eyebrow="Causal graph"
             title="Trace the chain, not just the number"
           />
@@ -145,25 +115,6 @@ export function DashboardPreview({ profile }: { profile: FinancialProfile | null
         </Link>
       </section>
 
-      <Dialog
-        description="Your financial profile is now connected. Deterministic calculations and live scenarios remain gated by the delivery plan."
-        onOpenChange={setIsPreviewOpen}
-        open={isPreviewOpen}
-        title="Scenario workspace is taking shape"
-      >
-        <ul className="dialog__list">
-          <li>
-            <strong>Day 4:</strong> a private, editable financial profile with validated money and rate inputs.
-          </li>
-          <li>
-            <strong>Today:</strong> profile-aware cash-flow, debt and savings snapshots on this dashboard.
-          </li>
-          <li>
-            <strong>Day 7:</strong> the first working repo-rate simulation.
-          </li>
-        </ul>
-        <Button onClick={() => setIsPreviewOpen(false)}>Back to the dashboard</Button>
-      </Dialog>
     </div>
   );
 }

@@ -2,26 +2,26 @@
   "schemaVersion": "1.0.0",
   "requestId": "8c6edfe5-1d2e-4d9d-b52c-6711bcf891c7",
   "scenarioType": "repo_rate_change",
-  "modelVersion": "0.1.0",
-  "generatedAt": "2026-08-13T12:00:01.000Z",
+  "modelVersion": "1.0.0",
+  "generatedAt": "2026-08-14T08:00:00Z",
   "currency": "INR",
-  "annualNetImpactPaise": 1800000,
+  "annualNetImpactPaise": 2766608,
   "confidence": {
-    "score": 65,
+    "score": 75,
     "level": "medium",
     "dimensions": {
       "evidenceQuality": 3,
       "causalDirectness": 4,
-      "modelStability": 3,
-      "personalizationCoverage": 2,
+      "modelStability": 4,
+      "personalizationCoverage": 3,
       "dataRecency": 1
     },
-    "rationale": "Loan and deposit balances are personalized, while transmission and reset timing remain assumptions."
+    "rationale": "Loan and deposit amounts are personal and the arithmetic is deterministic. Transmission ratios, loan term and deposit renewal timing remain assumptions."
   },
   "uncertainty": {
-    "p10AnnualImpactPaise": 600000,
-    "p50AnnualImpactPaise": 1800000,
-    "p90AnnualImpactPaise": 3000000,
+    "p10AnnualImpactPaise": 1708816,
+    "p50AnnualImpactPaise": 2766608,
+    "p90AnnualImpactPaise": 3818760,
     "method": "deterministic_bounds"
   },
   "impacts": [
@@ -29,19 +29,19 @@
       "id": "home-loan-emi",
       "label": "Home-loan payments",
       "direction": "benefit",
-      "annualImpactPaise": 2400000,
-      "mechanism": "A lower floating loan rate can reduce payments after the lender reset date.",
+      "annualImpactPaise": 3166608,
+      "mechanism": "The selected share of the repo-rate change reprices the floating loan; the remaining term stays fixed and the EMI is recalculated.",
       "confidence": {
-        "score": 75,
-        "level": "medium",
+        "score": 80,
+        "level": "high",
         "dimensions": {
           "evidenceQuality": 3,
           "causalDirectness": 4,
           "modelStability": 4,
-          "personalizationCoverage": 3,
+          "personalizationCoverage": 4,
           "dataRecency": 1
         },
-        "rationale": "The loan balance is personal but pass-through and timing are uncertain."
+        "rationale": "The balance and loan rate are personalized; pass-through and reset timing remain user-selected assumptions."
       },
       "causalNodeId": "monthly-emi"
     },
@@ -49,19 +49,19 @@
       "id": "deposit-income",
       "label": "Fixed-deposit income",
       "direction": "cost",
-      "annualImpactPaise": -600000,
-      "mechanism": "Renewal deposit rates may fall after the policy-rate reduction.",
+      "annualImpactPaise": -400000,
+      "mechanism": "The selected share of the repo-rate change reprices the modeled annual deposit rate on the saved fixed-deposit balance.",
       "confidence": {
-        "score": 55,
+        "score": 65,
         "level": "medium",
         "dimensions": {
           "evidenceQuality": 3,
           "causalDirectness": 3,
-          "modelStability": 2,
-          "personalizationCoverage": 2,
+          "modelStability": 3,
+          "personalizationCoverage": 3,
           "dataRecency": 1
         },
-        "rationale": "The balance is personal; deposit maturity timing is not yet captured."
+        "rationale": "The deposit balance is personalized; renewal timing and bank repricing are not present in the saved profile."
       },
       "causalNodeId": "deposit-income"
     }
@@ -69,10 +69,10 @@
   "causalGraph": {
     "nodes": [
       { "id": "repo-rate", "label": "RBI repo rate", "kind": "policy", "value": -100, "unit": "basis_points" },
-      { "id": "loan-rate", "label": "Floating loan rate", "kind": "financial_product" },
-      { "id": "monthly-emi", "label": "Monthly EMI", "kind": "household" },
-      { "id": "deposit-rate", "label": "Deposit renewal rate", "kind": "financial_product" },
-      { "id": "deposit-income", "label": "Deposit income", "kind": "household" }
+      { "id": "loan-rate", "label": "Floating loan rate", "kind": "financial_product", "value": 780.0, "unit": "basis_points" },
+      { "id": "monthly-emi", "label": "Monthly EMI", "kind": "household", "value": 6136923, "unit": "paise" },
+      { "id": "deposit-rate", "label": "Deposit renewal rate", "kind": "financial_product", "value": 675, "unit": "basis_points" },
+      { "id": "deposit-income", "label": "Deposit income", "kind": "household", "value": -400000, "unit": "paise_per_year" }
     ],
     "edges": [
       {
@@ -80,15 +80,15 @@
         "source": "repo-rate",
         "target": "loan-rate",
         "direction": "positive",
-        "mechanism": "Policy-rate movements can transmit to floating lending benchmarks.",
+        "mechanism": "Policy-rate changes can transmit to floating lending benchmarks.",
         "lagMonths": { "minimum": 1, "maximum": 6 },
         "assumptionIds": ["loanPassThrough"],
         "citationIds": ["rbi-monetary-policy-framework"],
         "confidence": {
-          "score": 75,
-          "level": "medium",
-          "dimensions": { "evidenceQuality": 3, "causalDirectness": 4, "modelStability": 4, "personalizationCoverage": 3, "dataRecency": 1 },
-          "rationale": "The mechanism is direct but lender timing varies."
+          "score": 80,
+          "level": "high",
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 4, "modelStability": 4, "personalizationCoverage": 4, "dataRecency": 1 },
+          "rationale": "The balance and loan rate are personalized; pass-through and reset timing remain user-selected assumptions."
         }
       },
       {
@@ -96,15 +96,15 @@
         "source": "loan-rate",
         "target": "monthly-emi",
         "direction": "positive",
-        "mechanism": "At constant term, a lower floating rate reduces the amortizing payment.",
+        "mechanism": "At a constant remaining term, the amortizing-loan formula maps the reset rate to a new monthly payment.",
         "lagMonths": { "minimum": 0, "maximum": 1 },
-        "assumptionIds": ["loanPassThrough"],
+        "assumptionIds": ["loanPassThrough", "remainingLoanTermMonths"],
         "citationIds": ["rbi-monetary-policy-framework"],
         "confidence": {
           "score": 80,
           "level": "high",
           "dimensions": { "evidenceQuality": 3, "causalDirectness": 4, "modelStability": 4, "personalizationCoverage": 4, "dataRecency": 1 },
-          "rationale": "The amortization relationship is deterministic after a rate is known."
+          "rationale": "The balance and loan rate are personalized; pass-through and reset timing remain user-selected assumptions."
         }
       },
       {
@@ -112,15 +112,15 @@
         "source": "repo-rate",
         "target": "deposit-rate",
         "direction": "positive",
-        "mechanism": "Banks may reprice new and renewing deposits after policy-rate changes.",
+        "mechanism": "Banks may reprice new and renewing deposits after policy changes.",
         "lagMonths": { "minimum": 1, "maximum": 12 },
-        "assumptionIds": ["depositPassThrough"],
+        "assumptionIds": ["depositPassThrough", "currentDepositRateBps"],
         "citationIds": ["rbi-monetary-policy-framework"],
         "confidence": {
-          "score": 55,
+          "score": 65,
           "level": "medium",
-          "dimensions": { "evidenceQuality": 3, "causalDirectness": 3, "modelStability": 2, "personalizationCoverage": 2, "dataRecency": 1 },
-          "rationale": "Repricing depends on each bank and deposit maturity."
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 3, "modelStability": 3, "personalizationCoverage": 3, "dataRecency": 1 },
+          "rationale": "The deposit balance is personalized; renewal timing and bank repricing are not present in the saved profile."
         }
       },
       {
@@ -128,15 +128,15 @@
         "source": "deposit-rate",
         "target": "deposit-income",
         "direction": "positive",
-        "mechanism": "A lower renewal rate reduces interest earned on the renewed principal.",
+        "mechanism": "The simple-interest formula maps the modeled renewal rate to gross annual interest on the saved deposit balance.",
         "lagMonths": { "minimum": 0, "maximum": 12 },
-        "assumptionIds": ["depositPassThrough"],
+        "assumptionIds": ["depositPassThrough", "currentDepositRateBps"],
         "citationIds": ["rbi-monetary-policy-framework"],
         "confidence": {
-          "score": 55,
+          "score": 65,
           "level": "medium",
-          "dimensions": { "evidenceQuality": 3, "causalDirectness": 3, "modelStability": 2, "personalizationCoverage": 2, "dataRecency": 1 },
-          "rationale": "Principal is known while maturity timing remains an assumption."
+          "dimensions": { "evidenceQuality": 3, "causalDirectness": 3, "modelStability": 3, "personalizationCoverage": 3, "dataRecency": 1 },
+          "rationale": "The deposit balance is personalized; renewal timing and bank repricing are not present in the saved profile."
         }
       }
     ]
@@ -159,6 +159,24 @@
       "rationale": "Illustrative share of the policy-rate change reaching renewal deposit rates.",
       "editable": true,
       "citationIds": ["rbi-monetary-policy-framework"]
+    },
+    {
+      "id": "remainingLoanTermMonths",
+      "label": "Remaining home-loan term",
+      "value": 180,
+      "unit": "months",
+      "rationale": "The saved profile does not yet store the contractual remaining loan term.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "currentDepositRateBps",
+      "label": "Current fixed-deposit rate",
+      "value": 725,
+      "unit": "basis_points",
+      "rationale": "The saved profile stores the deposit balance but not its current annual rate.",
+      "editable": true,
+      "citationIds": []
     }
   ],
   "citations": [
@@ -168,11 +186,14 @@
       "publisher": "Reserve Bank of India",
       "sourceType": "central_bank",
       "url": "https://www.rbi.org.in/",
-      "accessedAt": "2026-08-13T12:00:00.000Z",
+      "accessedAt": "2026-08-13T12:00:00Z",
       "locator": "Policy repo rate and monetary transmission context"
     }
   ],
   "warnings": [
-    "Illustrative golden result for contract testing; Day 6 implements the calculation primitives."
+    "Deterministic outputs use loan.floating_rate_reset.v1 and deposit.simple_interest.v1; no LLM calculates money.",
+    "The uncertainty band is a deterministic sensitivity check using plus or minus 20 percentage points around both pass-through assumptions; it is not a probability forecast.",
+    "Loan reset dates, benchmark spreads, deposit maturity timing, tax, fees and future policy changes are not modeled.",
+    "Educational simulation only; this result is not financial advice."
   ]
 }

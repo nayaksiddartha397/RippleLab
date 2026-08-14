@@ -33,8 +33,10 @@ def test_api_rejects_unsupported_scenario_type() -> None:
     response = client.post("/v1/contracts/simulation/validate", json=payload)
 
     assert response.status_code == 422
-    assert "scenario" in response.text
-    assert "union_tag_invalid" in response.text
+    error = response.json()["error"]
+    assert error["code"] == "INVALID_SIMULATION_REQUEST"
+    assert "scenario" in error["issues"][0]["field"]
+    assert error["issues"][0]["type"] == "union_tag_invalid"
 
 
 def test_api_rejects_wrong_repo_rate_unit() -> None:
@@ -43,7 +45,7 @@ def test_api_rejects_wrong_repo_rate_unit() -> None:
     response = client.post("/v1/contracts/simulation/validate", json=payload)
 
     assert response.status_code == 422
-    assert "basis_points" in response.text
+    assert "basis_points" in response.json()["error"]["issues"][0]["message"]
 
 
 def test_api_rejects_unknown_fields() -> None:
@@ -52,4 +54,4 @@ def test_api_rejects_unknown_fields() -> None:
     response = client.post("/v1/contracts/simulation/validate", json=payload)
 
     assert response.status_code == 422
-    assert "extra_forbidden" in response.text
+    assert response.json()["error"]["issues"][0]["type"] == "extra_forbidden"

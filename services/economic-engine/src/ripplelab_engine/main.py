@@ -2,11 +2,18 @@
 
 from typing import Literal
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from ripplelab_engine import __version__
-from ripplelab_engine.contracts import ContractValidationResponse, SimulationRequest
+from ripplelab_engine.contracts import (
+    ContractValidationResponse,
+    SimulationRequest,
+    SimulationResult,
+)
+from ripplelab_engine.repo_rate import simulate_repo_rate
 
 
 class HealthResponse(BaseModel):
@@ -24,6 +31,33 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url=None,
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_response(
+    _request: Request,
+    error: RequestValidationError,
+) -> JSONResponse:
+    """Return compact, field-oriented validation errors for product clients."""
+
+    issues = [
+        {
+            "field": ".".join(str(part) for part in issue["loc"] if part != "body"),
+            "message": issue["msg"],
+            "type": issue["type"],
+        }
+        for issue in error.errors()
+    ]
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error": {
+                "code": "INVALID_SIMULATION_REQUEST",
+                "message": "Check the scenario values and assumptions, then try again.",
+                "issues": issues,
+            }
+        },
+    )
 
 
 @app.get("/", tags=["system"])
@@ -62,3 +96,24 @@ def validate_simulation_request(request: SimulationRequest) -> ContractValidatio
         scenarioType=request.scenario.type,
         requestId=request.requestId,
     )
+
+
+@app.post(
+    "/v1/simulations/repo-rate",
+    response_model=SimulationResult,
+    response_model_exclude_none=True,
+    tags=["simulations"],
+)
+def run_repo_rate_simulation(request: SimulationRequest) -> SimulationResult:
+    """Calculate personalized loan and deposit impacts for one repo-rate change."""
+
+    try:
+        return simulate_repo_rate(request)
+    except (TypeError, ValueError) as error:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": "INVALID_REPO_RATE_ASSUMPTION",
+                "message": str(error),
+            },
+        ) from error

@@ -2,7 +2,7 @@
 
 RippleLab is an India-focused economic what-if simulator. It will connect a user's financial profile to deterministic scenario models, an inspectable causal graph, uncertainty ranges and source-backed explanations.
 
-This repository contains the first six checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication, a private personal financial profile, a versioned simulation/evidence contract and Decimal-safe loan/deposit calculation primitives.
+This repository contains the first seven checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication, a private personal financial profile, a versioned simulation/evidence contract, Decimal-safe loan/deposit primitives and the first profile-to-repo-rate vertical slice.
 
 ## Product boundary
 
@@ -33,7 +33,7 @@ tests/e2e                   Critical browser journeys introduced later
 ## Prerequisites
 
 - Node.js 24 (Node.js 20.9+ is supported by Next.js 16)
-- pnpm 11.16.0
+- pnpm 11.19.0
 - Python 3.12
 - uv 0.11.19 or newer
 
@@ -53,6 +53,8 @@ pnpm dev:api
 ```
 
 Open the web app at `http://localhost:3000` and the API health endpoint at `http://localhost:8000/health`.
+
+The web server forwards personal scenario requests to `RIPPLELAB_ENGINE_URL`. The safe local default in `.env.example` is `http://127.0.0.1:8000`; keep this server-side so browsers do not bypass the authenticated web boundary.
 
 ### Supabase authentication setup
 
@@ -99,6 +101,7 @@ All documented variables live in `.env.example`; values there are blank or safe 
 - [Financial profile data model](docs/PROFILE_DATA_MODEL.md)
 - [Simulation and evidence contract v1](docs/SIMULATION_CONTRACT_V1.md)
 - [Calculation primitives v1](docs/CALCULATION_PRIMITIVES_V1.md)
+- [Repo-rate vertical slice v1](docs/REPO_RATE_VERTICAL_SLICE_V1.md)
 - [30-day build plan](docs/RIPPLELAB_30_DAY_PLAN.md)
 
 ## Git workflow

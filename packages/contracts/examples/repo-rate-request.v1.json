@@ -48,6 +48,24 @@
       "rationale": "Illustrative share of the policy-rate change reaching renewal deposit rates.",
       "editable": true,
       "citationIds": ["rbi-monetary-policy-framework"]
+    },
+    {
+      "id": "remainingLoanTermMonths",
+      "label": "Remaining home-loan term",
+      "value": 180,
+      "unit": "months",
+      "rationale": "The saved profile does not yet store the contractual remaining loan term.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "currentDepositRateBps",
+      "label": "Current fixed-deposit rate",
+      "value": 725,
+      "unit": "basis_points",
+      "rationale": "The saved profile stores the deposit balance but not its current annual rate.",
+      "editable": true,
+      "citationIds": []
     }
   ],
   "evidence": [

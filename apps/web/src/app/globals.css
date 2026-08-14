@@ -1867,6 +1867,327 @@ code {
   }
 }
 
+.scenario-live-card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.scenario-live-card > p {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.45rem, 2.3vw, 2rem);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.scenario-live-card ul {
+  color: var(--color-ink-muted);
+  display: grid;
+  gap: var(--space-2);
+  line-height: 1.55;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.scenario-live-card .button {
+  justify-self: start;
+}
+
+.repo-scenario-page {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.repo-engine-pill {
+  background: var(--color-positive-50);
+  border: 1px solid #b9dfca;
+  border-radius: 999px;
+  color: var(--color-positive-600);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.45rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.repo-profile-empty {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+  max-width: 42rem;
+}
+
+.repo-profile-empty h2,
+.repo-profile-empty p {
+  margin: 0;
+}
+
+.repo-profile-empty p:not(.eyebrow) {
+  color: var(--color-ink-muted);
+  line-height: 1.65;
+}
+
+.repo-scenario-layout {
+  align-items: start;
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+}
+
+.repo-scenario-form {
+  position: sticky;
+  top: calc(4.4rem + var(--space-6));
+}
+
+.repo-profile-strip {
+  background: var(--color-ripple-50);
+  border: 1px solid var(--color-ripple-100);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: var(--space-6);
+  overflow: hidden;
+}
+
+.repo-profile-strip span {
+  background: rgb(255 255 255 / 0.68);
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4);
+}
+
+.repo-profile-strip small {
+  color: var(--color-ink-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.repo-profile-strip strong {
+  font-size: 0.95rem;
+}
+
+.repo-scenario-form form,
+.repo-result-column {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.repo-scenario-form fieldset {
+  border: 0;
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+}
+
+.repo-scenario-form fieldset + fieldset {
+  border-top: 1px solid var(--color-line);
+  padding-top: var(--space-5);
+}
+
+.repo-scenario-form legend {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: var(--space-3);
+}
+
+.repo-scenario-form fieldset > p {
+  color: var(--color-ink-muted);
+  font-size: 0.79rem;
+  line-height: 1.5;
+  margin: calc(-1 * var(--space-3)) 0 0;
+}
+
+.repo-field-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.repo-form-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.repo-form-actions > span {
+  color: var(--color-ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  max-width: 18rem;
+}
+
+.repo-scenario-error {
+  background: var(--color-negative-50);
+  border: 1px solid #efcbd0;
+  border-radius: var(--radius-sm);
+  color: var(--color-negative-600);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+}
+
+.repo-result-empty {
+  background: linear-gradient(145deg, white, var(--color-ripple-50));
+  display: grid;
+  gap: var(--space-4);
+  min-height: 28rem;
+  place-content: center;
+}
+
+.repo-result-empty h2,
+.repo-result-empty p {
+  margin: 0;
+}
+
+.repo-result-empty p:not(.eyebrow) {
+  color: var(--color-ink-muted);
+  line-height: 1.6;
+  max-width: 32rem;
+}
+
+.repo-empty-path {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.repo-empty-path span {
+  background: white;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  padding: 0.55rem 0.75rem;
+}
+
+.repo-empty-path i {
+  color: var(--color-signal-500);
+  font-style: normal;
+}
+
+.repo-net-result {
+  align-items: flex-start;
+  background: var(--color-ink);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.repo-net-result > div {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.repo-net-result .eyebrow {
+  color: #9ed3df;
+}
+
+.repo-net-result strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  letter-spacing: -0.04em;
+}
+
+.repo-net-result > div > span {
+  color: #b8c6d5;
+  font-size: 0.78rem;
+}
+
+.repo-output-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.repo-output-grid .card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5);
+}
+
+.repo-output-grid p,
+.repo-output-grid span {
+  color: var(--color-ink-muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.repo-output-grid strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+}
+
+.repo-uncertainty-card,
+.repo-method-card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.repo-range {
+  align-items: center;
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: 1fr minmax(1.5rem, 0.35fr) 1fr minmax(1.5rem, 0.35fr) 1fr;
+}
+
+.repo-range span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.repo-range small {
+  color: var(--color-ink-muted);
+  font-size: 0.65rem;
+}
+
+.repo-range strong {
+  font-size: 0.88rem;
+}
+
+.repo-range i {
+  background: linear-gradient(90deg, var(--color-ripple-100), var(--color-ripple-500));
+  height: 2px;
+}
+
+.repo-uncertainty-card > p,
+.repo-model-version {
+  color: var(--color-ink-muted);
+  font-size: 0.75rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.repo-method-card > div:not(.card__header) {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.repo-method-card h3 {
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-3);
+  text-transform: uppercase;
+}
+
+.repo-method-card ul {
+  color: var(--color-ink-muted);
+  display: grid;
+  font-size: 0.76rem;
+  gap: var(--space-2);
+  line-height: 1.5;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
 @media (max-width: 920px) {
   .app-shell {
     display: block;
@@ -1960,6 +2281,14 @@ code {
   .progress-formula-ledger > div {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .repo-scenario-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .repo-scenario-form {
+    position: static;
+  }
 }
 
 @media (max-width: 640px) {
@@ -2042,9 +2371,33 @@ code {
 
   .metric-grid,
   .profile-field-grid,
+  .repo-field-grid,
+  .repo-method-card > div:not(.card__header),
+  .repo-output-grid,
   .scenario-form__row,
   .route-loading__cards {
     grid-template-columns: 1fr;
+  }
+
+  .repo-profile-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .repo-net-result {
+    gap: var(--space-4);
+  }
+
+  .repo-range {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .repo-range i {
+    background: linear-gradient(180deg, var(--color-ripple-100), var(--color-ripple-500));
+    height: 1.25rem;
+    justify-self: start;
+    margin-left: var(--space-4);
+    width: 2px;
   }
 
   .card {
