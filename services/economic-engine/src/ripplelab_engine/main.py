@@ -13,6 +13,7 @@ from ripplelab_engine.contracts import (
     SimulationRequest,
     SimulationResult,
 )
+from ripplelab_engine.inflation import simulate_inflation
 from ripplelab_engine.repo_rate import simulate_repo_rate
 
 
@@ -114,6 +115,27 @@ def run_repo_rate_simulation(request: SimulationRequest) -> SimulationResult:
             status_code=422,
             detail={
                 "code": "INVALID_REPO_RATE_ASSUMPTION",
+                "message": str(error),
+            },
+        ) from error
+
+
+@app.post(
+    "/v1/simulations/inflation",
+    response_model=SimulationResult,
+    response_model_exclude_none=True,
+    tags=["simulations"],
+)
+def run_inflation_simulation(request: SimulationRequest) -> SimulationResult:
+    """Calculate category-weighted household inflation and purchasing-power impacts."""
+
+    try:
+        return simulate_inflation(request)
+    except (TypeError, ValueError) as error:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": "INVALID_INFLATION_ASSUMPTION",
                 "message": str(error),
             },
         ) from error

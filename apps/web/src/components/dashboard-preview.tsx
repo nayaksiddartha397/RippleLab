@@ -59,17 +59,20 @@ export function DashboardPreview({ profile }: { profile: FinancialProfile | null
 
       <section className="dashboard-grid">
         <Card className="scenario-card" elevated>
-          <CardHeader eyebrow="Scenario builder" title="Run the first live simulation" />
+          <CardHeader eyebrow="Scenario builder" title="Choose a personal simulation" />
           <div className="scenario-live-card">
-            <p>What if RBI cuts the repo rate by 1 percentage point?</p>
+            <p>What changes first: your expenses, EMI or purchasing power?</p>
             <ul>
-              <li>Use your saved home-loan and fixed-deposit balances.</li>
-              <li>Adjust loan and deposit pass-through assumptions.</li>
-              <li>See deterministic cash-flow outputs separately from uncertainty.</li>
+              <li>Inflation reprices an editable five-category household basket.</li>
+              <li>Repo-rate changes connect loan and fixed-deposit exposures.</li>
+              <li>Both engines separate deterministic outputs from uncertainty.</li>
             </ul>
-            <Link className="button button--primary button--md" href={profile ? "/scenarios/repo-rate" : "/profile"}>
-              {profile ? "Run repo-rate simulation" : "Create profile first"} <Icon name="arrow" />
-            </Link>
+            <div className="scenario-live-actions">
+              <Link className="button button--primary button--md" href={profile ? "/scenarios/inflation" : "/profile"}>
+                {profile ? "Model inflation" : "Create profile first"} <Icon name="arrow" />
+              </Link>
+              {profile ? <Link className="button button--secondary button--md" href="/scenarios/repo-rate">Model repo rate</Link> : null}
+            </div>
           </div>
         </Card>
 
@@ -77,16 +80,16 @@ export function DashboardPreview({ profile }: { profile: FinancialProfile | null
           <CardHeader
             action={<span className="readiness-pill">Live now</span>}
             eyebrow="Causal graph"
-            title="Trace the chain, not just the number"
+            title="Trace every household transmission path"
           />
-          <div aria-label="Illustrative repo-rate causal path" className="causal-path" role="img">
-            <span>Repo rate</span>
+          <div aria-label="Illustrative inflation causal path" className="causal-path" role="img">
+            <span>Headline CPI</span>
             <Icon name="chevron" />
-            <span>Loan rate</span>
+            <span>Category prices</span>
             <Icon name="chevron" />
-            <span>Monthly EMI</span>
+            <span>Your basket</span>
             <Icon name="chevron" />
-            <span className="causal-path__highlight">Your cash flow</span>
+            <span className="causal-path__highlight">Purchasing power</span>
           </div>
           <p>
             Every link will reveal its mechanism, model assumption, source and confidence level.

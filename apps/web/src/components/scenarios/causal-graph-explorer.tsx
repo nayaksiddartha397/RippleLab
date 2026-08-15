@@ -53,12 +53,25 @@ type InspectorDetails = {
   title: string;
 };
 
-const positions: Record<string, { x: number; y: number }> = {
+const repoRatePositions: Record<string, { x: number; y: number }> = {
   "repo-rate": { x: 0, y: 150 },
   "loan-rate": { x: 280, y: 40 },
   "monthly-emi": { x: 570, y: 40 },
   "deposit-rate": { x: 280, y: 270 },
   "deposit-income": { x: 570, y: 270 },
+};
+
+const inflationPositions: Record<string, { x: number; y: number }> = {
+  "headline-inflation": { x: 0, y: 240 },
+  "food-inflation": { x: 270, y: 0 },
+  "housing-inflation": { x: 270, y: 120 },
+  "transport-inflation": { x: 270, y: 240 },
+  "utilities-inflation": { x: 270, y: 360 },
+  "other-inflation": { x: 270, y: 480 },
+  "personal-basket-inflation": { x: 560, y: 240 },
+  "projected-expenses": { x: 850, y: 100 },
+  "real-salary-growth": { x: 850, y: 260 },
+  "real-portfolio-return": { x: 850, y: 420 },
 };
 
 const categoryLabels: Record<CausalNode["kind"], string> = {
@@ -106,7 +119,66 @@ const formulaReferences: Record<string, FormulaReference> = {
     expression: "reset gross interest - current gross interest",
     version: "deposit.simple_interest.v1",
   },
+  "headline-inflation": {
+    expression: "target CPI = current CPI + selected percentage-point change",
+    version: "scenario.inflation_change.v1",
+  },
+  "food-inflation": {
+    expression: "category rate = headline inflation × category pass-through",
+    version: "inflation.category_projection.v1",
+  },
+  "housing-inflation": {
+    expression: "category rate = headline inflation × category pass-through",
+    version: "inflation.category_projection.v1",
+  },
+  "transport-inflation": {
+    expression: "category rate = headline inflation × category pass-through",
+    version: "inflation.category_projection.v1",
+  },
+  "utilities-inflation": {
+    expression: "category rate = headline inflation × category pass-through",
+    version: "inflation.category_projection.v1",
+  },
+  "other-inflation": {
+    expression: "category rate = headline inflation × category pass-through",
+    version: "inflation.category_projection.v1",
+  },
+  "personal-basket-inflation": {
+    expression: "personal rate = Σ(category spend × category rate) / total spend",
+    version: "inflation.personal_basket.v1",
+  },
+  "projected-expenses": {
+    expression: "projected spend = current spend × (1 + annual rate × months / 12)",
+    version: "inflation.category_projection.v1",
+  },
+  "real-salary-growth": {
+    expression: "real growth = (1 + nominal salary growth) / (1 + personal inflation) - 1",
+    version: "inflation.real_growth.v1",
+  },
+  "real-portfolio-return": {
+    expression: "real return = (1 + nominal return) / (1 + personal inflation) - 1",
+    version: "inflation.real_growth.v1",
+  },
+  "basket-to-expenses": {
+    expression: "annual impact = -(target monthly spend - baseline monthly spend) × 12",
+    version: "inflation.category_projection.v1",
+  },
+  "basket-to-real-salary": {
+    expression: "real growth = (1 + nominal salary growth) / (1 + personal inflation) - 1",
+    version: "inflation.real_growth.v1",
+  },
+  "basket-to-real-portfolio": {
+    expression: "real return = (1 + nominal return) / (1 + personal inflation) - 1",
+    version: "inflation.real_growth.v1",
+  },
 };
+
+function formulaReference(id: string) {
+  if (formulaReferences[id]) return formulaReferences[id];
+  if (id.startsWith("headline-to-")) return formulaReferences["food-inflation"];
+  if (id.endsWith("-to-basket")) return formulaReferences["personal-basket-inflation"];
+  return formulaReferences["repo-rate"];
+}
 
 function formatNodeValue(node: CausalNode) {
   if (node.value === undefined) {
@@ -163,7 +235,7 @@ function nodeDetails(result: SimulationResult, node: CausalNode): InspectorDetai
     confidence:
       impact?.confidence ?? incomingEdge?.confidence ?? outgoingEdge?.confidence ?? result.confidence,
     eyebrow: `${categoryLabels[node.kind]} node`,
-    formula: formulaReferences[node.id] ?? formulaReferences["repo-rate"],
+    formula: formulaReference(node.id),
     mechanism:
       impact?.mechanism ??
       incomingEdge?.mechanism ??
@@ -186,7 +258,7 @@ function edgeDetails(result: SimulationResult, edge: CausalEdge): InspectorDetai
     citations: relatedItems(result.citations, edge.citationIds),
     confidence: edge.confidence,
     eyebrow: `${edge.direction} causal link`,
-    formula: formulaReferences[edge.id] ?? formulaReferences["repo-rate"],
+    formula: formulaReference(edge.id),
     lag,
     mechanism: edge.mechanism,
     title: `${source?.label ?? edge.source} → ${target?.label ?? edge.target}`,
@@ -212,6 +284,9 @@ const nodeTypes = { ripple: RippleNode };
 export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
   const initialId = result.causalGraph.nodes[0]?.id ?? "repo-rate";
   const [selection, setSelection] = useState<Selection>({ id: initialId, type: "node" });
+  const positions = result.scenarioType === "inflation_change" ? inflationPositions : repoRatePositions;
+  const presentKinds = [...new Set(result.causalGraph.nodes.map((node) => node.kind))];
+  const isInflation = result.scenarioType === "inflation_change";
 
   const nodes = useMemo<RippleFlowNode[]>(
     () =>
@@ -231,7 +306,7 @@ export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
           ariaLabel: `${graphNode.label}, ${categoryLabels[graphNode.kind]} node, ${valueLabel}. Press Enter or Space to inspect.`,
         };
       }),
-    [result.causalGraph.nodes, selection],
+    [positions, result.causalGraph.nodes, selection],
   );
 
   const edges = useMemo<RippleFlowEdge[]>(
@@ -280,21 +355,25 @@ export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
     <Card className="repo-causal-card" elevated>
       <CardHeader
         eyebrow="Interactive causal graph"
-        title="Trace the result from policy decision to personal cash flow"
+        title={
+          isInflation
+            ? "Trace headline inflation through your basket and purchasing power"
+            : "Trace the result from policy decision to personal cash flow"
+        }
       />
       <p className="repo-causal-instructions">
         Select a node or arrow to inspect it. Keyboard: Tab through the graph, then press Enter or
         Space. Use the controls to zoom or fit the complete path.
       </p>
       <div className="repo-causal-legend" aria-label="Node categories">
-        <span className="repo-causal-legend__policy">Policy</span>
-        <span className="repo-causal-legend__financial_product">Financial product</span>
-        <span className="repo-causal-legend__household">Household</span>
+        {presentKinds.map((kind) => (
+          <span className={`repo-causal-legend__${kind}`} key={kind}>{categoryLabels[kind]}</span>
+        ))}
         <i>Amber indicates the selected relationship.</i>
       </div>
 
       <div className="repo-causal-workspace">
-        <div className="repo-causal-canvas" aria-label="Repo-rate causal graph">
+        <div className="repo-causal-canvas" aria-label={`${result.scenarioType.replaceAll("_", " ")} causal graph`}>
           <ReactFlow<RippleFlowNode, RippleFlowEdge>
             ariaLabelConfig={{
               "controls.ariaLabel": "Causal graph view controls",

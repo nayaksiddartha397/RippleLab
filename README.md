@@ -2,7 +2,7 @@
 
 RippleLab is an India-focused economic what-if simulator. It will connect a user's financial profile to deterministic scenario models, an inspectable causal graph, uncertainty ranges and source-backed explanations.
 
-This repository contains the first eight checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication, a private personal financial profile, a versioned simulation/evidence contract, Decimal-safe loan/deposit primitives, the first profile-to-repo-rate vertical slice and its keyboard-accessible causal graph.
+This repository contains the first nine checkpoints of a 30-day MVP build: the runnable monorepo foundation, responsive application shell, Supabase-ready authentication, a private personal financial profile, a versioned simulation/evidence contract, Decimal-safe financial primitives, repo-rate and personal-inflation vertical slices, and keyboard-accessible causal graphs.
 
 ## Product boundary
 
@@ -103,6 +103,7 @@ All documented variables live in `.env.example`; values there are blank or safe 
 - [Calculation primitives v1](docs/CALCULATION_PRIMITIVES_V1.md)
 - [Repo-rate vertical slice v1](docs/REPO_RATE_VERTICAL_SLICE_V1.md)
 - [Causal graph framework v1](docs/CAUSAL_GRAPH_FRAMEWORK_V1.md)
+- [Personal inflation engine v1](docs/INFLATION_ENGINE_V1.md)
 - [30-day build plan](docs/RIPPLELAB_30_DAY_PLAN.md)
 
 ## Git workflow

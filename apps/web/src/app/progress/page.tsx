@@ -9,7 +9,8 @@ const days = [
   { day: 6, title: "Calculation primitives", detail: "EMI, deposits, Decimal-safe money and formula-level verification.", state: "complete" },
   { day: 7, title: "First live scenario", detail: "Profile-to-repo-rate FastAPI simulation with adjustable transmission assumptions.", state: "complete" },
   { day: 8, title: "Inspectable causal graph", detail: "Interactive graph nodes, evidence panels and keyboard-friendly exploration.", state: "complete" },
-  { day: 9, title: "Inflation engine", detail: "Personal expense-basket repricing with explicit category assumptions.", state: "next" },
+  { day: 9, title: "Inflation engine", detail: "Personal expense-basket repricing with explicit category assumptions.", state: "complete" },
+  { day: 10, title: "Oil-price engine", detail: "Direct fuel costs and indirect transport, food and utility pass-through.", state: "next" },
 ] as const;
 
 export const metadata = { title: "Build progress | RippleLab" };
@@ -28,20 +29,20 @@ export default function ProgressPage() {
       <section className="progress-hero">
         <div>
           <p className="eyebrow">30-day MVP build</p>
-          <h1>Every material link in the first scenario can now be inspected.</h1>
-          <p>RippleLab is 8 days into a structured 30-day build. The repo-rate result now includes an interactive causal graph whose nodes and arrows expose their mechanism, formula, assumptions, evidence, lag and confidence.</p>
+          <h1>Your household can now experience inflation differently from the headline.</h1>
+          <p>RippleLab is 9 days into a structured 30-day build. The new inflation engine reprices an editable five-category personal basket, compares it with the current path and exposes salary and portfolio purchasing-power diagnostics.</p>
         </div>
-        <div className="progress-score" aria-label="Eight of thirty days complete">
-          <strong>8</strong><span>of 30 days</span><div><i style={{ width: "26.67%" }} /></div><small>Causal graph framework</small>
+        <div className="progress-score" aria-label="Nine of thirty days complete">
+          <strong>9</strong><span>of 30 days</span><div><i style={{ width: "30%" }} /></div><small>Personal inflation engine</small>
         </div>
       </section>
 
       <section aria-labelledby="delivered-heading" className="progress-delivered">
         <header><p className="eyebrow">Delivered so far</p><h2 id="delivered-heading">A working product spine, not a visual mockup.</h2></header>
         <div className="progress-principles">
-          <article><strong>Engine-driven graph</strong><span>Five nodes and four edges come directly from the typed simulation result.</span></article>
-          <article><strong>Keyboard inspection</strong><span>Tab, Enter and Space reveal the same evidence available by pointer or touch.</span></article>
-          <article><strong>Evidence panel</strong><span>Mechanism, formula, assumptions, source, lag and confidence stay together.</span></article>
+          <article><strong>Personal basket</strong><span>Five editable categories translate national CPI into household-specific price pressure.</span></article>
+          <article><strong>Three perspectives</strong><span>Expenses, real salary growth and portfolio purchasing power remain distinct.</span></article>
+          <article><strong>Inspectable model</strong><span>Category pass-through, source, formula, lag and confidence stay visible.</span></article>
         </div>
       </section>
 
@@ -57,22 +58,22 @@ export default function ProgressPage() {
 
       <section aria-labelledby="formula-ledger-heading" className="progress-formula-ledger">
         <header>
-          <p className="eyebrow">Day 8 graph framework</p>
-          <h2 id="formula-ledger-heading">Select a relationship. Explain it. Verify it.</h2>
-          <p>The same Day 7 result is now explorable as an economic chain rather than a collection of unexplained output cards.</p>
+          <p className="eyebrow">Day 9 inflation model</p>
+          <h2 id="formula-ledger-heading">One headline rate. Five personal price channels.</h2>
+          <p>The result is driven by the household&apos;s entered monthly amounts and explicit category transmission choices.</p>
         </header>
         <div>
-          <article><span>Material nodes</span><strong>5</strong><p>Policy, product rates, EMI and household deposit income.</p></article>
-          <article><span>Directional links</span><strong>4</strong><p>Each arrow carries mechanism, lag, assumptions and evidence IDs.</p></article>
-          <article><span>Node categories</span><strong>3</strong><p>Policy, financial-product and household styling preserves context.</p></article>
-          <article><span>Evidence inspector</span><strong>1</strong><p>A synchronized panel for formulas, sources and confidence rationale.</p></article>
+          <article><span>Basket categories</span><strong>5</strong><p>Food, housing, transport, utilities and other household spending.</p></article>
+          <article><span>Causal nodes</span><strong>10</strong><p>Headline CPI flows into category rates, the personal basket and outcomes.</p></article>
+          <article><span>Causal links</span><strong>13</strong><p>Every arrow retains assumptions, evidence IDs, lag and confidence.</p></article>
+          <article><span>Sensitivity shift</span><strong>±20pp</strong><p>All category pass-through rates move together to expose model sensitivity.</p></article>
         </div>
       </section>
 
       <section className="progress-contract">
-        <div><p className="eyebrow">Day 8 boundary</p><h2>The graph visualizes the engine; it does not recreate it.</h2><p>Node values, edges, assumption IDs, citation IDs and confidence arrive in the FastAPI result. The frontend adds layout and formula labels without recalculating the household impact.</p></div>
-        <div aria-label="Inspectable repo-rate causal graph" className="progress-causal">
-          <span>RBI repo-rate change</span><b>policy node</b><i>→</i><span>Loan + deposit rates</span><b>financial-product nodes</b><i>→</i><span>EMI + deposit income</span><b>household nodes</b>
+        <div><p className="eyebrow">Day 9 boundary</p><h2>National inflation is context; the personal basket is the model.</h2><p>MoSPI methodology supports expenditure weighting, while editable pass-through values make category behavior explicit. The engine returns all money, rates, impacts and graph relationships.</p></div>
+        <div aria-label="Inspectable inflation causal graph" className="progress-causal">
+          <span>Headline CPI path</span><b>market context</b><i>→</i><span>Five category rates</span><b>explicit transmission</b><i>→</i><span>Expenses + purchasing power</span><b>personal outcomes</b>
         </div>
       </section>
 

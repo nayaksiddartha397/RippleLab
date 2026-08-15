@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0.0",
+  "requestId": "00000000-0000-4000-8000-000000000009",
+  "country": "IN",
+  "currency": "INR",
+  "scenario": {
+    "type": "inflation_change",
+    "currentInflationPercent": 4,
+    "change": { "value": 2, "unit": "percentage_points" },
+    "horizonMonths": 12
+  },
+  "profile": {
+    "profileId": "00000000-0000-4000-8000-000000000007",
+    "capturedAt": "2026-08-15T08:00:00Z",
+    "age": 34,
+    "city": "Bengaluru",
+    "employmentStatus": "salaried",
+    "housingStatus": "homeowner_with_mortgage",
+    "monthlyTakeHomePaise": 18000000,
+    "monthlyOtherIncomePaise": 0,
+    "monthlyEssentialExpensesPaise": 5500000,
+    "monthlyDiscretionaryExpensesPaise": 2500000,
+    "cashSavingsPaise": 60000000,
+    "fixedDepositsPaise": 80000000,
+    "equityInvestmentsPaise": 150000000,
+    "monthlyRentPaise": 0,
+    "homeValuePaise": 1200000000,
+    "outstandingHomeLoanPaise": 650000000,
+    "outstandingOtherLoansPaise": 0,
+    "monthlyEmiPaise": 5200000,
+    "weightedLoanRateBps": 850
+  },
+  "assumptions": [
+    { "id": "foodSpendPaise", "label": "Food and groceries spend", "value": 2200000, "unit": "paise", "rationale": "Editable monthly amount allocated from the saved expense profile.", "editable": true, "citationIds": [] },
+    { "id": "foodPassThrough", "label": "Food price pass-through", "value": 1, "unit": "ratio", "rationale": "Selected share of headline inflation applied to this category.", "editable": true, "citationIds": ["mospi-cpi-methodology"] },
+    { "id": "housingSpendPaise", "label": "Housing spend", "value": 0, "unit": "paise", "rationale": "Monthly rent from the profile; ownership costs are not inferred.", "editable": true, "citationIds": [] },
+    { "id": "housingPassThrough", "label": "Housing price pass-through", "value": 1, "unit": "ratio", "rationale": "Selected share of headline inflation applied to this category.", "editable": true, "citationIds": ["mospi-cpi-methodology"] },
+    { "id": "transportSpendPaise", "label": "Transport spend", "value": 1100000, "unit": "paise", "rationale": "Editable monthly amount allocated from the saved expense profile.", "editable": true, "citationIds": [] },
+    { "id": "transportPassThrough", "label": "Transport price pass-through", "value": 1.2, "unit": "ratio", "rationale": "Selected share of headline inflation applied to this category.", "editable": true, "citationIds": ["mospi-cpi-methodology"] },
+    { "id": "utilitiesSpendPaise", "label": "Utilities spend", "value": 1100000, "unit": "paise", "rationale": "Editable monthly amount allocated from the saved expense profile.", "editable": true, "citationIds": [] },
+    { "id": "utilitiesPassThrough", "label": "Utilities price pass-through", "value": 0.8, "unit": "ratio", "rationale": "Selected share of headline inflation applied to this category.", "editable": true, "citationIds": ["mospi-cpi-methodology"] },
+    { "id": "otherSpendPaise", "label": "Other household spend", "value": 3600000, "unit": "paise", "rationale": "Remaining essential and discretionary expenses from the saved profile.", "editable": true, "citationIds": [] },
+    { "id": "otherPassThrough", "label": "Other price pass-through", "value": 0.7, "unit": "ratio", "rationale": "Selected share of headline inflation applied to this category.", "editable": true, "citationIds": ["mospi-cpi-methodology"] },
+    { "id": "salaryGrowthBps", "label": "Expected salary growth", "value": 500, "unit": "basis_points", "rationale": "Editable nominal salary-growth assumption for the selected horizon.", "editable": true, "citationIds": [] },
+    { "id": "portfolioReturnBps", "label": "Expected nominal portfolio return", "value": 700, "unit": "basis_points", "rationale": "Editable nominal return applied to modeled financial assets.", "editable": true, "citationIds": [] }
+  ],
+  "evidence": [
+    {
+      "id": "mospi-cpi-methodology",
+      "title": "National Metadata Structure for Consumer Price Index",
+      "publisher": "Ministry of Statistics and Programme Implementation",
+      "sourceType": "methodology",
+      "url": "https://www.mospi.gov.in/sites/default/files/CPI/National_Metadata_Structure_for_CPI.pdf",
+      "accessedAt": "2026-08-15T08:00:00Z",
+      "locator": "CPI basket and expenditure-weight methodology"
+    },
+    {
+      "id": "rbi-inflation-target-framework",
+      "title": "Monetary Policy Framework",
+      "publisher": "Reserve Bank of India",
+      "sourceType": "central_bank",
+      "url": "https://www.rbi.org.in/commonperson/English/Scripts/speeches.aspx?Id=3161",
+      "accessedAt": "2026-08-15T08:00:00Z",
+      "locator": "Headline CPI inflation target and tolerance-band context"
+    }
+  ]
+}

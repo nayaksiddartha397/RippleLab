@@ -1893,6 +1893,12 @@ code {
   justify-self: start;
 }
 
+.scenario-live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
 .repo-scenario-page {
   display: grid;
   gap: var(--space-8);
@@ -2244,6 +2250,18 @@ code {
   color: #845800;
 }
 
+.repo-causal-legend__market {
+  background: #eef0fb;
+  border-color: #d6d4ef !important;
+  color: #56479d;
+}
+
+.repo-causal-legend__outcome {
+  background: var(--color-positive-50);
+  border-color: #b9ddca !important;
+  color: var(--color-positive-600);
+}
+
 .repo-causal-legend i {
   color: var(--color-ink-muted);
   font-size: 0.7rem;
@@ -2332,6 +2350,91 @@ code {
 
 .causal-node--household {
   border-color: var(--color-signal-500);
+}
+
+.causal-node--market {
+  border-color: var(--color-data-violet);
+}
+
+.causal-node--outcome {
+  border-color: var(--color-positive-600);
+}
+
+.inflation-layout {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+.inflation-form form {
+  max-height: 78rem;
+  overflow: auto;
+  padding-right: var(--space-2);
+  scrollbar-color: var(--color-line) transparent;
+}
+
+.inflation-policy-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.inflation-category-fields {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.inflation-category-input {
+  align-items: start;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: minmax(0, 1.25fr) minmax(9rem, 0.75fr);
+  padding: var(--space-3);
+}
+
+.inflation-output-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.inflation-output-grid .card:last-child {
+  grid-column: 1 / -1;
+}
+
+.inflation-driver-card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.inflation-driver-table {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.inflation-driver-row {
+  align-items: center;
+  display: grid;
+  font-size: 0.76rem;
+  gap: var(--space-3);
+  grid-template-columns: minmax(9rem, 1.25fr) repeat(3, minmax(6rem, 0.75fr));
+  padding: var(--space-3) var(--space-4);
+  min-width: 38rem;
+}
+
+.inflation-driver-row + .inflation-driver-row {
+  border-top: 1px solid var(--color-line);
+}
+
+.inflation-driver-row span {
+  color: var(--color-ink-muted);
+}
+
+.inflation-driver-row--header {
+  background: var(--color-surface-muted);
+  color: var(--color-ink-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .causal-node .react-flow__handle {
@@ -2603,6 +2706,12 @@ code {
     position: static;
   }
 
+  .inflation-form form {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
   .repo-causal-workspace {
     grid-template-columns: 1fr;
   }
@@ -2701,6 +2810,10 @@ code {
   }
 
   .repo-profile-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .inflation-category-input {
     grid-template-columns: 1fr;
   }
 

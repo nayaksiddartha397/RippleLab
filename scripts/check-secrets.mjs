@@ -7,8 +7,12 @@ const excludedDirectories = new Set([
   ".next",
   ".pnpm-store",
   ".venv",
+  ".wrangler",
+  "coverage",
+  "dist",
   "node_modules",
   "output",
+  "test-results",
   "tmp",
 ]);
 const textExtensions = new Set([
