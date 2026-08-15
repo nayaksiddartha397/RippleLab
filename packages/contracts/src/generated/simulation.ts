@@ -43,7 +43,7 @@ export type Assumption = {
   readonly id: string;
   readonly label: string;
   readonly value: AssumptionValue;
-  readonly unit: "basis_points" | "percentage_points" | "percent" | "paise" | "inr" | "usd_per_barrel" | "ratio" | "days" | "months" | "years" | "boolean" | "text";
+  readonly unit: "basis_points" | "percentage_points" | "percent" | "paise" | "paise_per_litre" | "litres_per_month" | "inr" | "usd_per_barrel" | "ratio" | "days" | "months" | "years" | "boolean" | "text";
   readonly rationale: string;
   readonly editable: boolean;
   readonly citationIds: ReadonlyArray<string>;

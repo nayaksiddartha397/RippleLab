@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "1.0.0",
+  "requestId": "00000000-0000-4000-8000-000000000010",
+  "country": "IN",
+  "currency": "INR",
+  "scenario": {
+    "type": "oil_price_change",
+    "currentPrice": 80,
+    "targetPrice": 120,
+    "unit": "usd_per_barrel",
+    "horizonMonths": 12
+  },
+  "profile": {
+    "profileId": "00000000-0000-4000-8000-000000000007",
+    "capturedAt": "2026-08-15T08:00:00Z",
+    "age": 34,
+    "city": "Bengaluru",
+    "employmentStatus": "salaried",
+    "housingStatus": "homeowner_with_mortgage",
+    "monthlyTakeHomePaise": 18000000,
+    "monthlyOtherIncomePaise": 0,
+    "monthlyEssentialExpensesPaise": 5500000,
+    "monthlyDiscretionaryExpensesPaise": 2500000,
+    "cashSavingsPaise": 60000000,
+    "fixedDepositsPaise": 80000000,
+    "equityInvestmentsPaise": 150000000,
+    "monthlyRentPaise": 0,
+    "homeValuePaise": 1200000000,
+    "outstandingHomeLoanPaise": 650000000,
+    "outstandingOtherLoansPaise": 0,
+    "monthlyEmiPaise": 5200000,
+    "weightedLoanRateBps": 850
+  },
+  "assumptions": [
+    {
+      "id": "currentRetailFuelPricePaisePerLitre",
+      "label": "Current retail fuel price",
+      "value": 10000,
+      "unit": "paise_per_litre",
+      "rationale": "Editable local retail-price starting point; no live city price is inferred.",
+      "editable": true,
+      "citationIds": ["ppac-retail-price-build-up"]
+    },
+    {
+      "id": "monthlyFuelLitres",
+      "label": "Monthly fuel use",
+      "value": 40,
+      "unit": "litres_per_month",
+      "rationale": "Editable household fuel exposure.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "crudeToRetailPassThrough",
+      "label": "Crude-to-retail pass-through",
+      "value": 0.3,
+      "unit": "ratio",
+      "rationale": "Selected share of the crude-price percentage change applied to retail fuel.",
+      "editable": true,
+      "citationIds": ["ppac-crude-price", "ppac-retail-price-build-up"]
+    },
+    {
+      "id": "transportSpendPaise",
+      "label": "Monthly transport spend",
+      "value": 1100000,
+      "unit": "paise",
+      "rationale": "Editable monthly non-fuel transport exposure.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "transportPassThrough",
+      "label": "Transport pass-through",
+      "value": 0.12,
+      "unit": "ratio",
+      "rationale": "Selected indirect transport response to the crude-price percentage change.",
+      "editable": true,
+      "citationIds": ["mospi-cpi-groups"]
+    },
+    {
+      "id": "foodSpendPaise",
+      "label": "Monthly food spend",
+      "value": 2200000,
+      "unit": "paise",
+      "rationale": "Editable monthly food exposure.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "foodPassThrough",
+      "label": "Food pass-through",
+      "value": 0.04,
+      "unit": "ratio",
+      "rationale": "Selected indirect food response to the crude-price percentage change.",
+      "editable": true,
+      "citationIds": ["mospi-cpi-groups"]
+    },
+    {
+      "id": "utilitiesSpendPaise",
+      "label": "Monthly utilities spend",
+      "value": 1100000,
+      "unit": "paise",
+      "rationale": "Editable monthly utilities exposure.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "utilitiesPassThrough",
+      "label": "Utilities pass-through",
+      "value": 0.06,
+      "unit": "ratio",
+      "rationale": "Selected indirect utilities response to the crude-price percentage change.",
+      "editable": true,
+      "citationIds": ["mospi-cpi-groups"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ppac-crude-price",
+      "title": "International Prices of Crude Oil (Indian Basket)",
+      "publisher": "Petroleum Planning and Analysis Cell",
+      "sourceType": "official_statistic",
+      "url": "https://ppac.gov.in/prices/international-prices-of-crude-oil",
+      "accessedAt": "2026-08-15T08:00:00Z",
+      "locator": "Indian Basket crude-oil series"
+    },
+    {
+      "id": "ppac-retail-price-build-up",
+      "title": "Price Build Up of Petrol and Diesel",
+      "publisher": "Petroleum Planning and Analysis Cell",
+      "sourceType": "methodology",
+      "url": "https://ppac.gov.in/retail-selling-price-rsp-of-petrol-diesel-and-domestic-lpg/price-build-up-of-petrol-and-diesel",
+      "accessedAt": "2026-08-15T08:00:00Z",
+      "locator": "Retail selling-price components"
+    },
+    {
+      "id": "mospi-cpi-groups",
+      "title": "Consumer Price Index frequently asked questions",
+      "publisher": "Ministry of Statistics and Programme Implementation",
+      "sourceType": "methodology",
+      "url": "https://mospi.gov.in/faq",
+      "accessedAt": "2026-08-15T08:00:00Z",
+      "locator": "Food, fuel and transport CPI groups"
+    }
+  ]
+}

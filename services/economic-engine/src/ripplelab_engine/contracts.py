@@ -60,6 +60,8 @@ class Assumption(ContractModel):
         "percentage_points",
         "percent",
         "paise",
+        "paise_per_litre",
+        "litres_per_month",
         "inr",
         "usd_per_barrel",
         "ratio",

@@ -14,6 +14,7 @@ const simulationSchema = await readJson("../schemas/simulation-contract.schema.j
 const goldenRequest = await readJson("../examples/repo-rate-request.v1.json");
 const goldenResult = await readJson("../examples/repo-rate-result.v1.json");
 const inflationRequest = await readJson("../examples/inflation-request.v1.json");
+const oilPriceRequest = await readJson("../examples/oil-price-request.v1.json");
 
 const healthRequired = ["status", "service", "version"];
 assert.equal(healthSchema.$schema, "https://json-schema.org/draft/2020-12/schema");
@@ -40,6 +41,7 @@ for (const definition of [
 assertValidJson(simulationSchema.$defs.SimulationRequest, goldenRequest, "golden request", simulationSchema);
 assertValidJson(simulationSchema.$defs.SimulationResult, goldenResult, "golden result", simulationSchema);
 assertValidJson(simulationSchema.$defs.SimulationRequest, inflationRequest, "inflation request", simulationSchema);
+assertValidJson(simulationSchema.$defs.SimulationRequest, oilPriceRequest, "oil-price request", simulationSchema);
 
 function expectedConfidenceLevel(score) {
   if (score >= 80) return "high";
@@ -106,3 +108,4 @@ assert.ok(versionErrors.some((error) => error.includes("schemaVersion")), `Unsup
 console.log("contracts: health and simulation schemas are valid");
 console.log("contracts: golden request/result, units, scenario enums, references and confidence rubric agree");
 console.log("contracts: personal inflation request uses the canonical scenario and evidence envelope");
+console.log("contracts: oil-price request distinguishes crude, retail-fuel and household units");

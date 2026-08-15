@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 
 const navigation = [
   { href: "/dashboard", icon: "grid" as const, label: "Dashboard" },
+  { href: "/scenarios/oil-price", icon: "spark" as const, label: "Oil-price simulator" },
   { href: "/scenarios/inflation", icon: "spark" as const, label: "Inflation simulator" },
   { href: "/scenarios/repo-rate", icon: "chart" as const, label: "Repo-rate simulator" },
   { href: "/profile", icon: "user" as const, label: "Financial profile" },
@@ -78,7 +79,7 @@ export function AppShell({
             <Icon name="spark" />
             <span>Educational simulation. Not financial advice.</span>
           </div>
-          <span className="build-label">Personal inflation engine / Day 9</span>
+          <span className="build-label">Oil-price impact engine / Day 10</span>
         </div>
       </aside>
 

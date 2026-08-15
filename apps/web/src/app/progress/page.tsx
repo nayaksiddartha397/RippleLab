@@ -10,7 +10,8 @@ const days = [
   { day: 7, title: "First live scenario", detail: "Profile-to-repo-rate FastAPI simulation with adjustable transmission assumptions.", state: "complete" },
   { day: 8, title: "Inspectable causal graph", detail: "Interactive graph nodes, evidence panels and keyboard-friendly exploration.", state: "complete" },
   { day: 9, title: "Inflation engine", detail: "Personal expense-basket repricing with explicit category assumptions.", state: "complete" },
-  { day: 10, title: "Oil-price engine", detail: "Direct fuel costs and indirect transport, food and utility pass-through.", state: "next" },
+  { day: 10, title: "Oil-price engine", detail: "Direct fuel costs and indirect transport, food and utility pass-through.", state: "complete" },
+  { day: 11, title: "Income-tax engine", detail: "Deterministic take-home effects across editable tax-policy assumptions.", state: "next" },
 ] as const;
 
 export const metadata = { title: "Build progress | RippleLab" };
@@ -29,20 +30,20 @@ export default function ProgressPage() {
       <section className="progress-hero">
         <div>
           <p className="eyebrow">30-day MVP build</p>
-          <h1>Your household can now experience inflation differently from the headline.</h1>
-          <p>RippleLab is 9 days into a structured 30-day build. The new inflation engine reprices an editable five-category personal basket, compares it with the current path and exposes salary and portfolio purchasing-power diagnostics.</p>
+          <h1>See how a global oil shock can reach your monthly budget.</h1>
+          <p>RippleLab is 10 days into a structured 30-day build. The new oil-price engine separates crude oil in USD per barrel from retail fuel in rupees per litre, then calculates direct driving costs and three editable indirect household channels.</p>
         </div>
-        <div className="progress-score" aria-label="Nine of thirty days complete">
-          <strong>9</strong><span>of 30 days</span><div><i style={{ width: "30%" }} /></div><small>Personal inflation engine</small>
+        <div className="progress-score" aria-label="Ten of thirty days complete">
+          <strong>10</strong><span>of 30 days</span><div><i style={{ width: "33.33%" }} /></div><small>Oil-price impact engine</small>
         </div>
       </section>
 
       <section aria-labelledby="delivered-heading" className="progress-delivered">
         <header><p className="eyebrow">Delivered so far</p><h2 id="delivered-heading">A working product spine, not a visual mockup.</h2></header>
         <div className="progress-principles">
-          <article><strong>Personal basket</strong><span>Five editable categories translate national CPI into household-specific price pressure.</span></article>
-          <article><strong>Three perspectives</strong><span>Expenses, real salary growth and portfolio purchasing power remain distinct.</span></article>
-          <article><strong>Inspectable model</strong><span>Category pass-through, source, formula, lag and confidence stay visible.</span></article>
+          <article><strong>Explicit units</strong><span>Crude USD/barrel, retail ₹/litre, monthly litres and household rupees never blur together.</span></article>
+          <article><strong>Four channels</strong><span>Direct fuel, transport, food and utilities remain separate before the annual total.</span></article>
+          <article><strong>Inspectable model</strong><span>Every pass-through, source, formula, lag and confidence score stays visible.</span></article>
         </div>
       </section>
 
@@ -58,22 +59,22 @@ export default function ProgressPage() {
 
       <section aria-labelledby="formula-ledger-heading" className="progress-formula-ledger">
         <header>
-          <p className="eyebrow">Day 9 inflation model</p>
-          <h2 id="formula-ledger-heading">One headline rate. Five personal price channels.</h2>
-          <p>The result is driven by the household&apos;s entered monthly amounts and explicit category transmission choices.</p>
+          <p className="eyebrow">Day 10 oil-price model</p>
+          <h2 id="formula-ledger-heading">One global shock. Four visible household channels.</h2>
+          <p>The result is driven by entered fuel use, monthly expenses and explicit crude-price transmission choices.</p>
         </header>
         <div>
-          <article><span>Basket categories</span><strong>5</strong><p>Food, housing, transport, utilities and other household spending.</p></article>
-          <article><span>Causal nodes</span><strong>10</strong><p>Headline CPI flows into category rates, the personal basket and outcomes.</p></article>
-          <article><span>Causal links</span><strong>13</strong><p>Every arrow retains assumptions, evidence IDs, lag and confidence.</p></article>
-          <article><span>Sensitivity shift</span><strong>±20pp</strong><p>All category pass-through rates move together to expose model sensitivity.</p></article>
+          <article><span>Household channels</span><strong>4</strong><p>Direct vehicle fuel plus transport, food and utility expenses.</p></article>
+          <article><span>Causal nodes</span><strong>7</strong><p>Crude and retail prices flow through four channels into one annual result.</p></article>
+          <article><span>Causal links</span><strong>9</strong><p>Every arrow retains assumptions, evidence IDs, lag and confidence.</p></article>
+          <article><span>Sensitivity shift</span><strong>±20pp</strong><p>All pass-through rates move together to expose transmission uncertainty.</p></article>
         </div>
       </section>
 
       <section className="progress-contract">
-        <div><p className="eyebrow">Day 9 boundary</p><h2>National inflation is context; the personal basket is the model.</h2><p>MoSPI methodology supports expenditure weighting, while editable pass-through values make category behavior explicit. The engine returns all money, rates, impacts and graph relationships.</p></div>
-        <div aria-label="Inspectable inflation causal graph" className="progress-causal">
-          <span>Headline CPI path</span><b>market context</b><i>→</i><span>Five category rates</span><b>explicit transmission</b><i>→</i><span>Expenses + purchasing power</span><b>personal outcomes</b>
+        <div><p className="eyebrow">Day 10 boundary</p><h2>Crude oil is the scenario; household transmission is the model.</h2><p>PPAC supports the crude and retail-price context, while MoSPI supports the household expense categories. Editable pass-through values remain assumptions, not predictions.</p></div>
+        <div aria-label="Inspectable oil-price causal graph" className="progress-causal">
+          <span>Crude USD/barrel</span><b>global scenario</b><i>→</i><span>Retail + indirect channels</span><b>explicit transmission</b><i>→</i><span>Annual household effect</span><b>personal outcome</b>
         </div>
       </section>
 

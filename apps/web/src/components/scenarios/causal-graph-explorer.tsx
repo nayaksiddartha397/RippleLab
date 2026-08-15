@@ -74,6 +74,16 @@ const inflationPositions: Record<string, { x: number; y: number }> = {
   "real-portfolio-return": { x: 850, y: 420 },
 };
 
+const oilPricePositions: Record<string, { x: number; y: number }> = {
+  "crude-oil-price": { x: 0, y: 210 },
+  "retail-fuel-price": { x: 280, y: 30 },
+  "direct-fuel-impact": { x: 570, y: 30 },
+  "transport-impact": { x: 280, y: 180 },
+  "food-impact": { x: 280, y: 330 },
+  "utilities-impact": { x: 280, y: 480 },
+  "annual-household-impact": { x: 860, y: 240 },
+};
+
 const categoryLabels: Record<CausalNode["kind"], string> = {
   policy: "Policy",
   market: "Market",
@@ -171,12 +181,53 @@ const formulaReferences: Record<string, FormulaReference> = {
     expression: "real return = (1 + nominal return) / (1 + personal inflation) - 1",
     version: "inflation.real_growth.v1",
   },
+  "crude-oil-price": {
+    expression: "crude change = (target USD/barrel - current USD/barrel) / current",
+    version: "scenario.oil_price_change.v1",
+  },
+  "retail-fuel-price": {
+    expression: "target retail price = current retail price × (1 + crude change × pass-through)",
+    version: "oil.crude_to_retail.v1",
+  },
+  "direct-fuel-impact": {
+    expression: "annual effect = -monthly litres × retail price change × 12",
+    version: "oil.direct_fuel_cost.v1",
+  },
+  "transport-impact": {
+    expression: "annual effect = -monthly spend × crude change × pass-through × 12",
+    version: "oil.indirect_expense.v1",
+  },
+  "food-impact": {
+    expression: "annual effect = -monthly spend × crude change × pass-through × 12",
+    version: "oil.indirect_expense.v1",
+  },
+  "utilities-impact": {
+    expression: "annual effect = -monthly spend × crude change × pass-through × 12",
+    version: "oil.indirect_expense.v1",
+  },
+  "annual-household-impact": {
+    expression: "annual total = direct fuel + transport + food + utilities",
+    version: "oil.household_total.v1",
+  },
+  "crude-to-retail": {
+    expression: "retail change = crude percentage change × crude-to-retail pass-through",
+    version: "oil.crude_to_retail.v1",
+  },
+  "retail-to-direct-fuel": {
+    expression: "annual effect = -monthly litres × retail price change × 12",
+    version: "oil.direct_fuel_cost.v1",
+  },
 };
 
 function formulaReference(id: string) {
   if (formulaReferences[id]) return formulaReferences[id];
   if (id.startsWith("headline-to-")) return formulaReferences["food-inflation"];
   if (id.endsWith("-to-basket")) return formulaReferences["personal-basket-inflation"];
+  if (id.startsWith("crude-to-") || id.endsWith("-to-total")) {
+    return id.endsWith("-to-total")
+      ? formulaReferences["annual-household-impact"]
+      : formulaReferences["transport-impact"];
+  }
   return formulaReferences["repo-rate"];
 }
 
@@ -190,6 +241,12 @@ function formatNodeValue(node: CausalNode) {
   if (node.unit === "basis_points") {
     return node.id === "repo-rate" ? `${node.value} bps` : `${(node.value / 100).toFixed(2)}%`;
   }
+  if (node.unit === "paise_per_litre") {
+    return `₹${(node.value / 100).toFixed(2)} / litre`;
+  }
+  if (node.unit === "usd_per_barrel") {
+    return `$${node.value.toFixed(2)} / barrel`;
+  }
   return `${node.value}${node.unit ? ` ${node.unit.replaceAll("_", " ")}` : ""}`;
 }
 
@@ -202,6 +259,15 @@ function formatAssumption(assumption: Assumption) {
   }
   if (assumption.unit === "basis_points") {
     return `${(assumption.value / 100).toFixed(2)}%`;
+  }
+  if (assumption.unit === "paise") {
+    return formatRupeesAndPaise(assumption.value);
+  }
+  if (assumption.unit === "paise_per_litre") {
+    return `₹${(assumption.value / 100).toFixed(2)} / litre`;
+  }
+  if (assumption.unit === "litres_per_month") {
+    return `${assumption.value} litres / month`;
   }
   return `${assumption.value} ${assumption.unit.replaceAll("_", " ")}`;
 }
@@ -284,9 +350,15 @@ const nodeTypes = { ripple: RippleNode };
 export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
   const initialId = result.causalGraph.nodes[0]?.id ?? "repo-rate";
   const [selection, setSelection] = useState<Selection>({ id: initialId, type: "node" });
-  const positions = result.scenarioType === "inflation_change" ? inflationPositions : repoRatePositions;
+  const positions =
+    result.scenarioType === "inflation_change"
+      ? inflationPositions
+      : result.scenarioType === "oil_price_change"
+        ? oilPricePositions
+        : repoRatePositions;
   const presentKinds = [...new Set(result.causalGraph.nodes.map((node) => node.kind))];
   const isInflation = result.scenarioType === "inflation_change";
+  const isOilPrice = result.scenarioType === "oil_price_change";
 
   const nodes = useMemo<RippleFlowNode[]>(
     () =>
@@ -358,6 +430,8 @@ export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
         title={
           isInflation
             ? "Trace headline inflation through your basket and purchasing power"
+            : isOilPrice
+              ? "Trace crude oil through direct and indirect household costs"
             : "Trace the result from policy decision to personal cash flow"
         }
       />

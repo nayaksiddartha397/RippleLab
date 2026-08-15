@@ -63,15 +63,16 @@ export function DashboardPreview({ profile }: { profile: FinancialProfile | null
           <div className="scenario-live-card">
             <p>What changes first: your expenses, EMI or purchasing power?</p>
             <ul>
+              <li>Oil-price shocks separate crude, retail fuel and four household cost channels.</li>
               <li>Inflation reprices an editable five-category household basket.</li>
               <li>Repo-rate changes connect loan and fixed-deposit exposures.</li>
-              <li>Both engines separate deterministic outputs from uncertainty.</li>
+              <li>All engines separate deterministic outputs from uncertainty.</li>
             </ul>
             <div className="scenario-live-actions">
-              <Link className="button button--primary button--md" href={profile ? "/scenarios/inflation" : "/profile"}>
-                {profile ? "Model inflation" : "Create profile first"} <Icon name="arrow" />
+              <Link className="button button--primary button--md" href={profile ? "/scenarios/oil-price" : "/profile"}>
+                {profile ? "Model oil prices" : "Create profile first"} <Icon name="arrow" />
               </Link>
-              {profile ? <Link className="button button--secondary button--md" href="/scenarios/repo-rate">Model repo rate</Link> : null}
+              {profile ? <Link className="button button--secondary button--md" href="/scenarios/inflation">Model inflation</Link> : null}
             </div>
           </div>
         </Card>
@@ -82,14 +83,14 @@ export function DashboardPreview({ profile }: { profile: FinancialProfile | null
             eyebrow="Causal graph"
             title="Trace every household transmission path"
           />
-          <div aria-label="Illustrative inflation causal path" className="causal-path" role="img">
-            <span>Headline CPI</span>
+          <div aria-label="Illustrative oil-price causal path" className="causal-path" role="img">
+            <span>Crude oil</span>
             <Icon name="chevron" />
-            <span>Category prices</span>
+            <span>Retail + indirect</span>
             <Icon name="chevron" />
-            <span>Your basket</span>
+            <span>Household channels</span>
             <Icon name="chevron" />
-            <span className="causal-path__highlight">Purchasing power</span>
+            <span className="causal-path__highlight">Annual impact</span>
           </div>
           <p>
             Every link will reveal its mechanism, model assumption, source and confidence level.

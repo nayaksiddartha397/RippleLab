@@ -14,6 +14,7 @@ from ripplelab_engine.contracts import (
     SimulationResult,
 )
 from ripplelab_engine.inflation import simulate_inflation
+from ripplelab_engine.oil_price import simulate_oil_price
 from ripplelab_engine.repo_rate import simulate_repo_rate
 
 
@@ -136,6 +137,27 @@ def run_inflation_simulation(request: SimulationRequest) -> SimulationResult:
             status_code=422,
             detail={
                 "code": "INVALID_INFLATION_ASSUMPTION",
+                "message": str(error),
+            },
+        ) from error
+
+
+@app.post(
+    "/v1/simulations/oil-price",
+    response_model=SimulationResult,
+    response_model_exclude_none=True,
+    tags=["simulations"],
+)
+def run_oil_price_simulation(request: SimulationRequest) -> SimulationResult:
+    """Calculate direct fuel and indirect household expense impacts."""
+
+    try:
+        return simulate_oil_price(request)
+    except (TypeError, ValueError) as error:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": "INVALID_OIL_PRICE_ASSUMPTION",
                 "message": str(error),
             },
         ) from error

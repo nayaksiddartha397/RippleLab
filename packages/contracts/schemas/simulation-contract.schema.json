@@ -84,7 +84,7 @@
         "value": { "$ref": "#/$defs/AssumptionValue" },
         "unit": {
           "type": "string",
-          "enum": ["basis_points", "percentage_points", "percent", "paise", "inr", "usd_per_barrel", "ratio", "days", "months", "years", "boolean", "text"]
+          "enum": ["basis_points", "percentage_points", "percent", "paise", "paise_per_litre", "litres_per_month", "inr", "usd_per_barrel", "ratio", "days", "months", "years", "boolean", "text"]
         },
         "rationale": { "type": "string", "minLength": 1, "maxLength": 500 },
         "editable": { "type": "boolean" },
