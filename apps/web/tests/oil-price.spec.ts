@@ -59,6 +59,16 @@ test.describe("personal oil-price engine", () => {
     await seedSignedInProfile(context);
     await page.goto("/scenarios/oil-price", { waitUntil: "domcontentloaded" });
 
+    await expect(page).toHaveTitle("Oil-price simulator | RippleLab");
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      "content",
+      "Translate a crude-oil scenario into direct fuel and indirect household expense effects.",
+    );
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      "content",
+      "Oil-price simulator | RippleLab",
+    );
+    await expect(page.locator('meta[property="og:image"]')).toHaveCount(0);
     await expect(
       page.getByRole("heading", { name: "Translate a crude-oil shock into household expenses." }),
     ).toBeVisible();

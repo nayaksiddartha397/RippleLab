@@ -38,7 +38,7 @@ function requestOrigin(requestHeaders: Headers) {
 export async function generateMetadata(): Promise<Metadata> {
   const origin = requestOrigin(await headers());
   const socialImageUrl = new URL(
-    "/og-day10.png",
+    "/og-day11.png",
     origin,
   ).toString();
   const title = "RippleLab | Personal economic simulations";
@@ -60,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: socialImageUrl,
           width: 1536,
           height: 1024,
-          alt: "RippleLab Day 10 oil-price impact engine showing crude oil flowing through retail fuel into direct fuel, transport, food and utility costs",
+          alt: "RippleLab Day 11 income-tax impact engine showing income flowing through tax policy into take-home pay",
         },
       ],
     },

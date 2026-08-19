@@ -2552,6 +2552,106 @@ code {
   text-transform: uppercase;
 }
 
+.tax-layout {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+}
+
+.tax-form form {
+  max-height: 86rem;
+  overflow: auto;
+  padding-right: var(--space-2);
+  scrollbar-color: var(--color-line) transparent;
+}
+
+.tax-income-presets {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tax-policy-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tax-toggle {
+  align-items: flex-start;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.tax-toggle input {
+  accent-color: var(--color-ripple-600);
+  height: 1.1rem;
+  margin-top: 0.1rem;
+  width: 1.1rem;
+}
+
+.tax-toggle span {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.tax-toggle strong {
+  font-size: 0.78rem;
+}
+
+.tax-toggle small {
+  color: var(--color-ink-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.tax-output-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tax-slab-card {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.tax-slab-table {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.tax-slab-row {
+  align-items: center;
+  display: grid;
+  font-size: 0.76rem;
+  gap: var(--space-3);
+  grid-template-columns: minmax(9rem, 1.2fr) repeat(3, minmax(6.5rem, 0.7fr));
+  min-width: 38rem;
+  padding: var(--space-3) var(--space-4);
+}
+
+.tax-slab-row + .tax-slab-row {
+  border-top: 1px solid var(--color-line);
+}
+
+.tax-slab-row span {
+  color: var(--color-ink-muted);
+}
+
+.tax-slab-row--header {
+  background: var(--color-surface-muted);
+  color: var(--color-ink-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tax-slab-row--relief {
+  background: var(--color-ripple-50);
+}
+
 .causal-node .react-flow__handle {
   background: white;
   border: 2px solid var(--color-ripple-600);
@@ -2833,6 +2933,12 @@ code {
     padding-right: 0;
   }
 
+  .tax-form form {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
   .repo-causal-workspace {
     grid-template-columns: 1fr;
   }
@@ -2939,7 +3045,9 @@ code {
   }
 
   .oil-preset-grid,
-  .oil-channel-input {
+  .oil-channel-input,
+  .tax-income-presets,
+  .tax-policy-fields {
     grid-template-columns: 1fr;
   }
 

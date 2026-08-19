@@ -13,6 +13,7 @@ from ripplelab_engine.contracts import (
     SimulationRequest,
     SimulationResult,
 )
+from ripplelab_engine.income_tax import simulate_income_tax
 from ripplelab_engine.inflation import simulate_inflation
 from ripplelab_engine.oil_price import simulate_oil_price
 from ripplelab_engine.repo_rate import simulate_repo_rate
@@ -158,6 +159,27 @@ def run_oil_price_simulation(request: SimulationRequest) -> SimulationResult:
             status_code=422,
             detail={
                 "code": "INVALID_OIL_PRICE_ASSUMPTION",
+                "message": str(error),
+            },
+        ) from error
+
+
+@app.post(
+    "/v1/simulations/income-tax",
+    response_model=SimulationResult,
+    response_model_exclude_none=True,
+    tags=["simulations"],
+)
+def run_income_tax_simulation(request: SimulationRequest) -> SimulationResult:
+    """Calculate new-regime income-tax and take-home impacts for one rate shift."""
+
+    try:
+        return simulate_income_tax(request)
+    except (TypeError, ValueError) as error:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "code": "INVALID_INCOME_TAX_ASSUMPTION",
                 "message": str(error),
             },
         ) from error

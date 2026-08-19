@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 
@@ -8,7 +9,16 @@ import { Card } from "@/components/ui/card";
 import { requireUser } from "@/lib/auth/session";
 import { getFinancialProfile } from "@/lib/profile/data";
 
-export const metadata = { title: "Oil-price simulator | RippleLab" };
+const title = "Oil-price simulator | RippleLab";
+const description =
+  "Translate a crude-oil scenario into direct fuel and indirect household expense effects.";
+
+export const metadata: Metadata = {
+  title,
+  description,
+  openGraph: { title, description, images: [] },
+  twitter: { title, description, images: [] },
+};
 
 const testProfileId = "00000000-0000-4000-8000-000000000007";
 

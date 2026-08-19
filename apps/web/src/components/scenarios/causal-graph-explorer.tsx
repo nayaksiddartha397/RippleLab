@@ -84,6 +84,16 @@ const oilPricePositions: Record<string, { x: number; y: number }> = {
   "annual-household-impact": { x: 860, y: 240 },
 };
 
+const incomeTaxPositions: Record<string, { x: number; y: number }> = {
+  "annual-gross-income": { x: 0, y: 30 },
+  "taxable-income": { x: 270, y: 120 },
+  "policy-rate-shift": { x: 270, y: 350 },
+  "current-tax": { x: 570, y: 20 },
+  "proposed-tax": { x: 570, y: 270 },
+  "annual-tax-impact": { x: 870, y: 145 },
+  "monthly-take-home-impact": { x: 1_150, y: 145 },
+};
+
 const categoryLabels: Record<CausalNode["kind"], string> = {
   policy: "Policy",
   market: "Market",
@@ -217,6 +227,62 @@ const formulaReferences: Record<string, FormulaReference> = {
     expression: "annual effect = -monthly litres × retail price change × 12",
     version: "oil.direct_fuel_cost.v1",
   },
+  "annual-gross-income": {
+    expression: "gross modeled income = annual salary + other ordinary-rate income",
+    version: "tax.taxable_income.v1",
+  },
+  "taxable-income": {
+    expression: "taxable income = max(0, salary - standard deduction + other income)",
+    version: "tax.taxable_income.v1",
+  },
+  "policy-rate-shift": {
+    expression: "proposed paid-slab rate = clamp(current rate + selected pp change, 0%, 100%)",
+    version: "scenario.income_tax_change.v1",
+  },
+  "current-tax": {
+    expression: "current tax = slab tax - Section 87A relief + 4% cess",
+    version: "tax.ay2026_27_new_regime.v1",
+  },
+  "proposed-tax": {
+    expression: "proposed tax = shifted slab tax - Section 87A relief + 4% cess",
+    version: "tax.ay2026_27_new_regime.v1",
+  },
+  "annual-tax-impact": {
+    expression: "annual take-home impact = current total tax - proposed total tax",
+    version: "tax.take_home_delta.v1",
+  },
+  "monthly-take-home-impact": {
+    expression: "monthly take-home impact = annual take-home impact / 12",
+    version: "tax.take_home_delta.v1",
+  },
+  "gross-to-taxable": {
+    expression: "taxable income = max(0, salary - standard deduction + other income)",
+    version: "tax.taxable_income.v1",
+  },
+  "taxable-to-current-tax": {
+    expression: "Σ(taxable slab slice × current marginal rate), then relief and cess",
+    version: "tax.ay2026_27_new_regime.v1",
+  },
+  "taxable-to-proposed-tax": {
+    expression: "Σ(taxable slab slice × proposed marginal rate), then relief and cess",
+    version: "tax.ay2026_27_new_regime.v1",
+  },
+  "policy-to-proposed-tax": {
+    expression: "proposed paid-slab rate = current rate + selected percentage-point change",
+    version: "scenario.income_tax_change.v1",
+  },
+  "current-tax-to-impact": {
+    expression: "annual impact = current total tax - proposed total tax",
+    version: "tax.take_home_delta.v1",
+  },
+  "proposed-tax-to-impact": {
+    expression: "annual impact = current total tax - proposed total tax",
+    version: "tax.take_home_delta.v1",
+  },
+  "annual-to-monthly-tax-impact": {
+    expression: "monthly impact = annual impact / 12",
+    version: "tax.take_home_delta.v1",
+  },
 };
 
 function formulaReference(id: string) {
@@ -235,8 +301,9 @@ function formatNodeValue(node: CausalNode) {
   if (node.value === undefined) {
     return "No numeric value";
   }
-  if (node.unit === "paise" || node.unit === "paise_per_year") {
-    return `${formatRupeesAndPaise(node.value)}${node.unit === "paise_per_year" ? " / year" : ""}`;
+  if (node.unit === "paise" || node.unit === "paise_per_year" || node.unit === "paise_per_month") {
+    const suffix = node.unit === "paise_per_year" ? " / year" : node.unit === "paise_per_month" ? " / month" : "";
+    return `${formatRupeesAndPaise(node.value)}${suffix}`;
   }
   if (node.unit === "basis_points") {
     return node.id === "repo-rate" ? `${node.value} bps` : `${(node.value / 100).toFixed(2)}%`;
@@ -246,6 +313,9 @@ function formatNodeValue(node: CausalNode) {
   }
   if (node.unit === "usd_per_barrel") {
     return `$${node.value.toFixed(2)} / barrel`;
+  }
+  if (node.unit === "percentage_points") {
+    return `${node.value > 0 ? "+" : ""}${node.value} pp`;
   }
   return `${node.value}${node.unit ? ` ${node.unit.replaceAll("_", " ")}` : ""}`;
 }
@@ -355,10 +425,13 @@ export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
       ? inflationPositions
       : result.scenarioType === "oil_price_change"
         ? oilPricePositions
-        : repoRatePositions;
+        : result.scenarioType === "income_tax_change"
+          ? incomeTaxPositions
+          : repoRatePositions;
   const presentKinds = [...new Set(result.causalGraph.nodes.map((node) => node.kind))];
   const isInflation = result.scenarioType === "inflation_change";
   const isOilPrice = result.scenarioType === "oil_price_change";
+  const isIncomeTax = result.scenarioType === "income_tax_change";
 
   const nodes = useMemo<RippleFlowNode[]>(
     () =>
@@ -432,7 +505,9 @@ export function CausalGraphExplorer({ result }: { result: SimulationResult }) {
             ? "Trace headline inflation through your basket and purchasing power"
             : isOilPrice
               ? "Trace crude oil through direct and indirect household costs"
-            : "Trace the result from policy decision to personal cash flow"
+              : isIncomeTax
+                ? "Trace income through current tax, proposed tax and take-home pay"
+                : "Trace the result from policy decision to personal cash flow"
         }
       />
       <p className="repo-causal-instructions">

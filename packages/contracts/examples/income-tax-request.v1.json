@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "1.0.0",
+  "requestId": "00000000-0000-4000-8000-000000000011",
+  "country": "IN",
+  "currency": "INR",
+  "scenario": {
+    "type": "income_tax_change",
+    "effectiveRateChange": { "value": -2, "unit": "percentage_points" },
+    "horizonMonths": 12
+  },
+  "profile": {
+    "profileId": "00000000-0000-4000-8000-000000000007",
+    "capturedAt": "2026-08-19T08:00:00Z",
+    "age": 34,
+    "city": "Bengaluru",
+    "employmentStatus": "salaried",
+    "housingStatus": "homeowner_with_mortgage",
+    "monthlyTakeHomePaise": 18000000,
+    "monthlyOtherIncomePaise": 0,
+    "monthlyEssentialExpensesPaise": 5500000,
+    "monthlyDiscretionaryExpensesPaise": 2500000,
+    "cashSavingsPaise": 60000000,
+    "fixedDepositsPaise": 80000000,
+    "equityInvestmentsPaise": 150000000,
+    "monthlyRentPaise": 0,
+    "homeValuePaise": 1200000000,
+    "outstandingHomeLoanPaise": 650000000,
+    "outstandingOtherLoansPaise": 0,
+    "monthlyEmiPaise": 5200000,
+    "weightedLoanRateBps": 850
+  },
+  "assumptions": [
+    {
+      "id": "annualSalaryPaise",
+      "label": "Annual salary",
+      "value": 216000000,
+      "unit": "paise",
+      "rationale": "Editable annual salary starting point; the profile estimate is take-home pay multiplied by 12.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "otherTaxableIncomePaise",
+      "label": "Other taxable income",
+      "value": 0,
+      "unit": "paise",
+      "rationale": "Editable ordinary-rate income outside salary; special-rate income is excluded.",
+      "editable": true,
+      "citationIds": []
+    },
+    {
+      "id": "standardDeductionPaise",
+      "label": "Standard deduction",
+      "value": 7500000,
+      "unit": "paise",
+      "rationale": "AY 2026-27 new-regime employee standard deduction, editable for scenario testing.",
+      "editable": true,
+      "citationIds": ["income-tax-itr-validation"]
+    },
+    {
+      "id": "cessRateBps",
+      "label": "Health and Education Cess",
+      "value": 400,
+      "unit": "basis_points",
+      "rationale": "Four per cent cess applied after rebate or marginal relief.",
+      "editable": true,
+      "citationIds": ["income-tax-ay2026-27-rates"]
+    },
+    {
+      "id": "rebateThresholdPaise",
+      "label": "Section 87A income threshold",
+      "value": 120000000,
+      "unit": "paise",
+      "rationale": "AY 2026-27 new-regime threshold for the Section 87A rebate and marginal relief.",
+      "editable": true,
+      "citationIds": ["income-tax-section87a"]
+    },
+    {
+      "id": "rebateMaximumPaise",
+      "label": "Maximum Section 87A rebate",
+      "value": 6000000,
+      "unit": "paise",
+      "rationale": "AY 2026-27 maximum rebate for eligible resident individuals.",
+      "editable": true,
+      "citationIds": ["income-tax-section87a"]
+    },
+    {
+      "id": "residentEligibleForRebate",
+      "label": "Resident individual eligible for Section 87A",
+      "value": true,
+      "unit": "boolean",
+      "rationale": "Toggle off when the person is not eligible for the resident-individual rebate.",
+      "editable": true,
+      "citationIds": ["income-tax-section87a"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "income-tax-ay2026-27-rates",
+      "title": "Salaried Individuals for AY 2026-27",
+      "publisher": "Income Tax Department",
+      "sourceType": "regulation",
+      "url": "https://www.incometax.gov.in/iec/foportal/help/individual/return-applicable-1",
+      "accessedAt": "2026-08-19T08:00:00Z",
+      "locator": "New tax regime slabs and Health and Education Cess"
+    },
+    {
+      "id": "income-tax-section87a",
+      "title": "Special Regimes for Taxation of Individuals",
+      "publisher": "Income Tax Department",
+      "sourceType": "regulation",
+      "url": "https://www.incometaxindia.gov.in/w/special-regimes-for-taxation-of-individuals-huf-aop-boi-ajp-companies-and-co-operative-societies",
+      "accessedAt": "2026-08-19T08:00:00Z",
+      "locator": "Section 87A rebate and marginal relief"
+    },
+    {
+      "id": "income-tax-itr-validation",
+      "title": "ITR-1 Validation Rules AY 2026-27",
+      "publisher": "Income Tax Department",
+      "sourceType": "methodology",
+      "url": "https://www.incometax.gov.in/iec/foportal/sites/default/files/2026-05/CBDT_e-Filing_ITR%201_Validation%20Rules_AY%202026-27.pdf",
+      "accessedAt": "2026-08-19T08:00:00Z",
+      "locator": "₹75,000 new-regime employee standard deduction"
+    }
+  ]
+}
